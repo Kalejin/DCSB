@@ -237,7 +237,7 @@ namespace DCSB.ViewModels
         }
         private void CheckForUpdates()
         {
-            Process.Start("https://github.com/Kalejin/DCSB");
+            Process.Start("https://github.com/Kalejin/DCSB/releases");
         }
 
         public ICommand AddPresetCommand
