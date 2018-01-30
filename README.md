@@ -2,6 +2,8 @@
 
 Deathcounter and Soundboard allows you to create keyboard shortcuts to trigger sound effects and keep count of something (for example deaths in game). Key shortcuts are recognized even if application is not focused.
 
+![Application screenshot](screenshot.png?raw=true "Main Window")
+
 ## For each counter you can set:
 - *Name* - to easily identify counters
 - *Path to text file* - file where current count is stored and can be used to display it on stream
