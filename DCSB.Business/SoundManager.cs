@@ -80,9 +80,14 @@ namespace DCSB.Business
 
         public void ChangePrimaryDevice(OutputDevice device)
         {
+            AudioPlaybackEngine tmp = new AudioPlaybackEngine(device.Number)
+            {
+                Overlap = Overlap,
+                Volume = Volume
+            };
             _primarySoundPlayer.Stop();
             _primarySoundPlayer.Dispose();
-            _primarySoundPlayer = new AudioPlaybackEngine(device.Number);
+            _primarySoundPlayer = tmp;
         }
 
         public void ChangeSecondaryDevice(OutputDevice device)
@@ -92,7 +97,11 @@ namespace DCSB.Business
                 _secondarySoundPlayer.Stop();
                 _secondarySoundPlayer.Dispose();
             }
-            _secondarySoundPlayer = device.Number == -2 ? null : new AudioPlaybackEngine(device.Number);
+            _secondarySoundPlayer = device.Number == -2 ? null : new AudioPlaybackEngine(device.Number)
+            {
+                Overlap = Overlap,
+                Volume = Volume
+            };
         }
 
         public IList<OutputDevice> EnumerateDevices()
