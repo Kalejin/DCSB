@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="DCSB.Views.MainWindow.SplitView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DCSB.Views.MainWindow"
+             xmlns:Utils="clr-namespace:DCSB.Utils;assembly=DCSB.Utils"
+             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300"
+             d:DesignWidth="400"
+             SizeChanged="UserControlSizeChanged">
+
+    <UserControl.Resources>
+        <Converters:DisplayOptionToEnabled x:Key="DisplayOptionToEnabled" />
+        <Converters:AreEqualConverter x:Key="AreEqualConverter" />
+        <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
+
+        <DataTemplate x:Key="CounterListView">
+            <local:CounterListView DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}"
+                                   IsEnabled="{Binding ConfigurationModel.Enable, Converter={StaticResource DisplayOptionToEnabled}, ConverterParameter={x:Static Utils:DisplayOption.Counters}}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="SoundListView">
+            <local:SoundListView DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}"
+                                 IsEnabled="{Binding ConfigurationModel.Enable, Converter={StaticResource DisplayOptionToEnabled}, ConverterParameter={x:Static Utils:DisplayOption.Sounds}}" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+            
+            <MenuItem Header="Settings" 
+                      Command="{Binding OpenSettingsCommand}" />
+            
+            <MenuItem Header="{Binding ConfigurationModel.SelectedPreset.Name}" 
+                      HeaderStringFormat="Preset: {0}"
+                      DisplayMemberPath="Name"
+                      ItemsSource="{Binding ConfigurationModel.PresetCollection}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="{x:Type MenuItem}">
+                        <Setter Property="Command" Value="{Binding DataContext.PresetSelectedCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                        <Setter Property="CommandParameter" Value="{Binding}" />
+                        <Setter Property="InputGestureText" Value="{Binding Keys, Converter={StaticResource vKeysToStringConverter}}" />
+                        <Setter Property="IsChecked">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource AreEqualConverter}">
+                                    <Binding Path="DataContext.ConfigurationModel.SelectedPreset" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+                                    <Binding Path="."/>
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+
+            <MenuItem Header="Help"
+                      HorizontalAlignment="Right">
+                <MenuItem Header="About" 
+                          Command="{Binding OpenAboutCommand}" />
+                <MenuItem Header="Check for updates" 
+                          Command="{Binding CheckForUpdatesCommand}" />
+            </MenuItem>
+        </Menu>
+
+        <ContentControl>
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ConfigurationModel.Scene}" Value="{x:Static Utils:DisplayOption.Counters}">
+                            <Setter Property="ContentTemplate" Value="{StaticResource CounterListView}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ConfigurationModel.Scene}" Value="{x:Static Utils:DisplayOption.Sounds}">
+                            <Setter Property="ContentTemplate" Value="{StaticResource SoundListView}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+
+            <Grid x:Name="splitterGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding CountersWidth, Mode=TwoWay}" MinWidth="180" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{Binding SoundsWidth, Mode=TwoWay}" MinWidth="180" />
+                </Grid.ColumnDefinitions>
+
+                <ContentControl ContentTemplate="{StaticResource CounterListView}" Grid.Column="0" />
+
+                <GridSplitter HorizontalAlignment="Stretch" Width="5" Grid.Column="1" />
+
+                <ContentControl ContentTemplate="{StaticResource SoundListView}" Grid.Column="2" />
+            </Grid>
+        </ContentControl>
+
+    </DockPanel>
+</UserControl>

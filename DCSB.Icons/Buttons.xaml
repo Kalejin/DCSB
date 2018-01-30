@@ -1,0 +1,43 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Path x:Shared="False" x:Key="AddIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M2,16H10V14H2M18,14V10H16V14H12V16H16V20H18V16H22V14M14,6H2V8H14M14,10H
+          2V12H14V10Z" />
+
+    <Path x:Shared="False" x:Key="RemoveIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M2,6V8H14V6H2M2,10V12H10V10H2M14.17,10.76L12.76,12.17L15.59,15L12.76,17.83L
+          14.17,19.24L17,16.41L19.83,19.24L21.24,17.83L18.41,15L21.24,12.17L19.83,10.76L17,13.59L14.17,10.76M2,14V16H10V
+          14H2Z" />
+
+    <Path x:Shared="False" x:Key="IncrementIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+          Stretch="Uniform" Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 
+          12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V
+          11H13V7Z" />
+
+    <Path x:Shared="False" x:Key="DecrementIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A
+          10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7" />
+
+    <Path x:Shared="False" x:Key="PlayIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A
+          10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M10,16.5L16,12L10,7.5V16.5Z" />
+
+    <Path x:Shared="False" x:Key="PauseIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A
+          10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z" />
+
+    <Path x:Shared="False" x:Key="StopIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4C
+          16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4M9,9V15H15V9" />
+
+    <Path x:Shared="False" x:Key="WarningIcon" Fill="#FFBD1E1E" Stretch="Uniform" 
+          Data="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M
+          12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
+
+    <Path x:Shared="False" x:Key="HelpIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M
+          12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A
+          2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z" />
+    
+</ResourceDictionary>

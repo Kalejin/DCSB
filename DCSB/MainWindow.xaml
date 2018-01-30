@@ -1,0 +1,42 @@
+﻿<Window x:Class="DCSB.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+        xmlns:local="clr-namespace:DCSB"
+        xmlns:Views="clr-namespace:DCSB.Views.MainWindow;assembly=DCSB.Views"
+        xmlns:ViewModels="clr-namespace:DCSB.ViewModels;assembly=DCSB.ViewModels"
+        xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+        Title="Deathcounter and Soundboard"
+        MinHeight="150"
+        MinWidth="380"
+        Loaded="WindowLoaded"
+        Icon="icon.ico"
+        Height="{Binding ConfigurationModel.WindowHeight, Mode=TwoWay}"
+        Width="{Binding ConfigurationModel.WindowWidth, Mode=TwoWay}">
+
+    <i:Interaction.Behaviors>
+        <Interactivity:OpenCloseWindowBehavior WindowType="local:SettingsWindow" 
+                                               Open="{Binding SettingsOpened, Mode=TwoWay}" 
+                                               DataContext="{Binding}" />
+        <Interactivity:OpenCloseWindowBehavior WindowType="local:SoundWindow" 
+                                               Open="{Binding SoundOpened, Mode=TwoWay}" 
+                                               DataContext="{Binding}" />
+        <Interactivity:OpenCloseWindowBehavior WindowType="local:CounterWindow" 
+                                               Open="{Binding CounterOpened, Mode=TwoWay}" 
+                                               DataContext="{Binding}" />
+        <Interactivity:OpenCloseWindowBehavior WindowType="local:BindKeysWindow" 
+                                               Open="{Binding BindKeysOpened, Mode=TwoWay}" 
+                                               DataContext="{Binding}" />
+        <Interactivity:OpenCloseWindowBehavior WindowType="local:AboutWindow" 
+                                               Open="{Binding AboutOpened, Mode=TwoWay}" 
+                                               DataContext="{Binding}" />
+    </i:Interaction.Behaviors>
+
+    <Window.DataContext>
+        <ViewModels:ViewModel/>
+    </Window.DataContext>
+
+    <Views:SplitView />
+
+</Window>

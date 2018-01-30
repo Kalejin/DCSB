@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="DCSB.Views.SettingsWindow.PresetView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
+             xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
+             xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
+    </UserControl.Resources>
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <GroupBox Header="Presets">
+                <StackPanel>
+                    <ComboBox ItemsSource="{Binding ConfigurationModel.PresetCollection}"
+                              SelectedItem="{Binding ConfigurationModel.SelectedPreset}"
+                              DisplayMemberPath="Name" />
+                    <DockPanel>
+                        <Controls:IconButton DockPanel.Dock="Right" 
+                                             Margin="2" 
+                                             ToolTip="Remove Preset"
+                                             Content="{StaticResource RemoveIcon}" 
+                                             Command="{Binding RemovePresetCommand}" />
+                        <Controls:IconButton DockPanel.Dock="Right" 
+                                             Margin="2" 
+                                             ToolTip="Add Preset"
+                                             Content="{StaticResource AddIcon}"
+                                             Command="{Binding AddPresetCommand}" />
+                        <TextBox Name="NameField"
+                                 DockPanel.Dock="Left"
+                                 Margin="0,5"
+                                 Text="{Binding ConfigurationModel.SelectedPreset.Name, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Width="20" Height="{Binding ActualHeight, ElementName=NameField}" Command="{Binding BindKeysCommand}" 
+                                CommandParameter="{Binding ConfigurationModel.SelectedPreset}" Margin="5,0,0,0">...</Button>
+                        <TextBox IsReadOnly="True" Cursor="Arrow" Height="{Binding ActualHeight, ElementName=NameField}"
+                                 Text="{Binding ConfigurationModel.SelectedPreset.Keys, Converter={StaticResource vKeysToStringConverter}}"
+                                 Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
+                                 Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.SelectedPreset}" />
+                    </DockPanel>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

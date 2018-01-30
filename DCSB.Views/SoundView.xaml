@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="DCSB.Views.SoundView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+             xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+             Width="500">
+
+    <UserControl.Resources>
+        <Converters:ConcatStringsConverter x:Key="concatStringsConverter" />
+        <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0">Name:</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Text="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Name}" />
+
+        <Label Grid.Row="1" Grid.Column="0">File/s:</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="5" IsReadOnly="True" AcceptsReturn="True" MaxHeight="250" 
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Cursor="Arrow"
+                 Text="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Files, Converter={StaticResource concatStringsConverter}, ConverterParameter='&#x0a;'}"
+                 Interactivity:Commands.DoubleClickCommand="{Binding OpenSoundFileDialogCommand}" />
+        <Button Grid.Row="1" Grid.Column="2" Margin="0,5,5,5" Width="20" Command="{Binding OpenSoundFileDialogCommand}">...</Button>
+
+        <Label Grid.Row="2" Grid.Column="0">Key/s:</Label>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="5" IsReadOnly="True"
+                 Text="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Keys, Converter={StaticResource vKeysToStringConverter}}"
+                 Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
+                 Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.SelectedPreset.SelectedSound}" />
+        <Button Grid.Row="2" Grid.Column="2" Margin="0,5,5,5" Width="20" Command="{Binding BindKeysCommand}" 
+                CommandParameter="{Binding ConfigurationModel.SelectedPreset.SelectedSound}">...</Button>
+
+        <Label Grid.Row="3" Grid.Column="0">Volume:</Label>
+        <Slider Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Maximum="100" AutoToolTipPlacement="BottomRight" IsMoveToPointEnabled="True" 
+                Value="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Volume}"/>
+
+        <Label Grid.Row="4" Grid.Column="0">Loop:</Label>
+        <CheckBox Grid.Row="4" Grid.Column="1" Margin="5" IsChecked="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Loop}" />
+    </Grid>
+</UserControl>

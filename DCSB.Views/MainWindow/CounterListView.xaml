@@ -1,0 +1,124 @@
+﻿<UserControl x:Class="DCSB.Views.MainWindow.CounterListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
+             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+             xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+             mc:Ignorable="d" 
+             MinHeight="70" 
+             MinWidth="180" 
+             Padding="3,0,3,0"
+             d:DesignHeight="300" 
+             d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <Converters:StringToVisibilityConverter x:Key="stringToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <DockPanel>
+        <Label DockPanel.Dock="Top">
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="true">
+                            <Setter Property="Content" Value="Counters" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="false">
+                            <Setter Property="Content" Value="Counters (Disabled)" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </Label>
+
+        <DockPanel DockPanel.Dock="Bottom"
+                   LastChildFill="False">
+            <Controls:IconButton DockPanel.Dock="Left" 
+                                 Content="{StaticResource AddIcon}" 
+                                 Margin="2" 
+                                 Command="{Binding AddCounterCommand}"
+                                 ToolTip="Add Counter" />
+            <Controls:IconButton DockPanel.Dock="Left" 
+                                 Content="{StaticResource RemoveIcon}" 
+                                 Margin="2" 
+                                 Command="{Binding RemoveCounterCommand}"
+                                 ToolTip="Remove Counter" />
+            <Controls:IconButton DockPanel.Dock="Right" 
+                                 Content="{StaticResource IncrementIcon}" 
+                                 Margin="2" 
+                                 Command="{Binding IncrementCommand}"
+                                 ToolTip="Increment" />
+            <Controls:IconButton DockPanel.Dock="Right" 
+                                 Content="{StaticResource DecrementIcon}" 
+                                 Margin="2" 
+                                 Command="{Binding DecrementCommand}"
+                                 ToolTip="Decrement" />
+        </DockPanel>
+
+        <DataGrid ItemsSource="{Binding ConfigurationModel.SelectedPreset.CounterCollection}" 
+                  SelectedItem="{Binding ConfigurationModel.SelectedPreset.SelectedCounter, Mode=TwoWay}"
+                  Interactivity:Commands.DoubleClickCommand="{Binding OpenCounterCommand}"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="False"
+                  SelectionMode="Single"
+                  CanUserDeleteRows="False" 
+                  HeadersVisibility="Column"
+                  CanUserAddRows="False"
+                  HorizontalScrollBarVisibility="Disabled">
+
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add" 
+                              Command="{Binding AddCounterCommand}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+            <DataGrid.Resources>
+                <ContextMenu x:Key="RowMenu" DataContext="{Binding}">
+                    <MenuItem Header="Edit" 
+                              Command="{Binding DataContext.OpenCounterCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                    <MenuItem Header="Remove" 
+                              Command="{Binding DataContext.RemoveCounterCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                </ContextMenu>
+            </DataGrid.Resources>
+
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding RemoveCounterCommand}" />
+            </DataGrid.InputBindings>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" >
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" 
+                                    IsReadOnly="True" 
+                                    Binding="{Binding Path=Name}" />
+                <DataGridTemplateColumn Header="Count"
+                                        Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <TextBlock Text="{Binding Count}" />
+                                <Ellipse Width="10" 
+                                         Height="10" 
+                                         Margin="3,0"
+                                         Fill="#FFD10000" 
+                                         HorizontalAlignment="Right"
+                                         Visibility="{Binding Error, Converter={StaticResource stringToVisibilityConverter}}">
+                                    <Ellipse.ToolTip>
+                                        <ToolTip Content="{Binding Error}" />
+                                    </Ellipse.ToolTip>
+                                </Ellipse>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

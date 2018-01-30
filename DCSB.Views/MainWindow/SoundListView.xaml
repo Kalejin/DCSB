@@ -1,0 +1,163 @@
+﻿<UserControl x:Class="DCSB.Views.MainWindow.SoundListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
+             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+             xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+             mc:Ignorable="d" 
+             MinHeight="70" 
+             MinWidth="180"
+             Padding="3,0,3,0"
+             d:DesignHeight="300" 
+             d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <Converters:VolumeIconConverter x:Key="volumeIconConverter" />
+        <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
+        <Converters:StringToVisibilityConverter x:Key="stringToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <Label DockPanel.Dock="Left">
+                <ContentControl.Style>
+                    <Style TargetType="{x:Type ContentControl}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="true">
+                                <Setter Property="Content" Value="Sounds" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="false">
+                                <Setter Property="Content" Value="Sounds (Disabled)" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </Label>
+            
+            <Slider x:Name="VolumeSlider"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right"
+                    Width="100"
+                    Maximum="100"
+                    IsMoveToPointEnabled="True"
+                    AutoToolTipPlacement="BottomRight"
+                    Value="{Binding CurrentVolume}" />
+
+            <Controls:IconButton DockPanel.Dock="Right" 
+                                 Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource volumeIconConverter}, ConverterParameter={StaticResource VolumeIcons}}" 
+                                 Command="{Binding MuteCommand}"
+                                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                 Height="{Binding ActualHeight, ElementName=VolumeSlider}">
+                <Controls:IconButton.Style>
+                    <Style TargetType="{x:Type Controls:IconButton}">
+                        <Style.Setters>
+                            <Setter Property="ToolTip" Value="Mute" />
+                        </Style.Setters>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Value, ElementName=VolumeSlider}" Value="0">
+                                <Setter Property="ToolTip" Value="Unmute" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Controls:IconButton.Style>
+            </Controls:IconButton>
+
+            <StackPanel />
+        </DockPanel>
+
+        <DockPanel DockPanel.Dock="Bottom">
+            <Controls:IconButton DockPanel.Dock="Left" 
+                                 Content="{StaticResource AddIcon}"
+                                 Margin="2"
+                                 Command="{Binding AddSoundCommand}"
+                                 ToolTip="Add Sound" />
+            <Controls:IconButton DockPanel.Dock="Left" 
+                                 Content="{StaticResource RemoveIcon}" 
+                                 Margin="2"
+                                 Command="{Binding RemoveSoundCommand}"
+                                 ToolTip="Remove Sound" />
+            <Controls:IconButton DockPanel.Dock="Right" 
+                                 Content="{StaticResource PlayIcon}" 
+                                 Margin="2"
+                                 Command="{Binding PlayCommand}"
+                                 ToolTip="Play" />
+            <Controls:IconButton DockPanel.Dock="Right" 
+                                 Content="{StaticResource PauseIcon}" 
+                                 Margin="2"
+                                 Command="{Binding PauseCommand}"
+                                 ToolTip="Pause" />
+            <Controls:IconButton DockPanel.Dock="Right" 
+                                 Content="{StaticResource StopIcon}" 
+                                 Margin="2"
+                                 Command="{Binding StopCommand}"
+                                 ToolTip="Stop" />
+            <StackPanel />
+        </DockPanel>
+
+        <DataGrid ItemsSource="{Binding ConfigurationModel.SelectedPreset.SoundCollection}" 
+                  SelectedItem="{Binding ConfigurationModel.SelectedPreset.SelectedSound, Mode=TwoWay}"
+                  Interactivity:Commands.DoubleClickCommand="{Binding OpenSoundCommand}"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="False"
+                  SelectionMode="Single"
+                  CanUserDeleteRows="False" 
+                  HeadersVisibility="Column"
+                  CanUserAddRows="False"
+                  HorizontalScrollBarVisibility="Disabled">
+
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add" 
+                              Command="{Binding AddSoundCommand}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+            <DataGrid.Resources>
+                <ContextMenu x:Key="RowMenu" DataContext="{Binding}">
+                    <MenuItem Header="Edit" 
+                              Command="{Binding DataContext.OpenSoundCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                    <MenuItem Header="Remove" 
+                              Command="{Binding DataContext.RemoveSoundCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                </ContextMenu>
+            </DataGrid.Resources>
+
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding RemoveSoundCommand}" />
+            </DataGrid.InputBindings>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" >
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" 
+                                    IsReadOnly="True" 
+                                    Binding="{Binding Name}" />
+                <DataGridTemplateColumn Header="Keys"
+                                        Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <TextBlock Text="{Binding Keys, Converter={StaticResource vKeysToStringConverter}}" />
+                                <Ellipse Width="10" 
+                                         Height="10" 
+                                         Margin="3,0"
+                                         Fill="#FFD10000" 
+                                         HorizontalAlignment="Right"
+                                         Visibility="{Binding Error, Converter={StaticResource stringToVisibilityConverter}}">
+                                    <Ellipse.ToolTip>
+                                        <ToolTip Content="{Binding Error}" />
+                                    </Ellipse.ToolTip>
+                                </Ellipse>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
