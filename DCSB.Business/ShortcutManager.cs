@@ -22,7 +22,7 @@ namespace DCSB.Business
 
         public void KeyDown(VKey key, List<VKey> pressedKeys)
         {
-            if (_configurationModel.Enable == DisplayOption.Sounds || _configurationModel.Enable == DisplayOption.Both)
+            if (_configurationModel.Enable == DisplayOption.Counters || _configurationModel.Enable == DisplayOption.Both)
             {
                 Shortcut shortcut = ResolveShortcut(key, pressedKeys, new List<Shortcut>(){
                     _configurationModel.CounterShortcuts.Next,
