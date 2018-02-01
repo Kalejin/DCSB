@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Installers
+[Ii]nstallers/
+# Installer-script output
+App-Version.txt
+
 # User-specific files
 *.suo
 *.user
