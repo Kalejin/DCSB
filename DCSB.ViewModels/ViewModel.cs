@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -10,6 +9,7 @@ using DCSB.Business;
 using DCSB.Input;
 using DCSB.Models;
 using DCSB.Utils;
+using System.Threading.Tasks;
 
 namespace DCSB.ViewModels
 {
@@ -20,6 +20,7 @@ namespace DCSB.ViewModels
         private OpenFileManager _openFileManager;
         private ShortcutManager _shortcutManager;
         private SoundManager _soundManager;
+        private UpdateManager _updateManager;
 
         private KeyboardInput _keyboardInput;
 
@@ -46,6 +47,7 @@ namespace DCSB.ViewModels
                 Overlap = _configurationModel.Overlap
             };
             _shortcutManager = new ShortcutManager(_configurationModel, _soundManager);
+            _updateManager = new UpdateManager();
 
             _configurationModel.PropertyChanged += (sender, e) => _configurationManager.Save((ConfigurationModel)sender);
 
@@ -57,6 +59,8 @@ namespace DCSB.ViewModels
             _configurationModel.SoundShortcuts.Pause.Command = PauseCommand;
             _configurationModel.SoundShortcuts.Continue.Command = ContinueCommand;
             _configurationModel.SoundShortcuts.Stop.Command = StopCommand;
+
+            Task.Run(() => _updateManager.AutoUpdateCheck(Version));
         }
 
         public IntPtr WindowHandle
@@ -145,9 +149,9 @@ namespace DCSB.ViewModels
             }
         }
 
-        public string Version
+        public Version Version
         {
-            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+            get { return Assembly.GetExecutingAssembly().GetName().Version; }
         }
 
         public double CurrentVolume
@@ -235,9 +239,9 @@ namespace DCSB.ViewModels
         {
             get { return new RelayCommand(CheckForUpdates); }
         }
-        private void CheckForUpdates()
+        private async void CheckForUpdates()
         {
-            Process.Start("https://github.com/Kalejin/DCSB/releases");
+            await _updateManager.ManualUpdateCheck(Version);
         }
 
         public ICommand AddPresetCommand
