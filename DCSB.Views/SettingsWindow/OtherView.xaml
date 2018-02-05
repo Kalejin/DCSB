@@ -17,17 +17,8 @@
     
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
-            <GroupBox Header="Display">
-                <Controls:RadioButtonList SelectedValue="{Binding ConfigurationModel.Scene}"
-                                          SelectedValuePath="Tag">
-                    <ListBoxItem Tag="{x:Static Utils:DisplayOption.Both}">Both</ListBoxItem>
-                    <ListBoxItem Tag="{x:Static Utils:DisplayOption.Counters}">Only Counters</ListBoxItem>
-                    <ListBoxItem Tag="{x:Static Utils:DisplayOption.Sounds}">Only Sounds</ListBoxItem>
-                </Controls:RadioButtonList>
-            </GroupBox>
-
             <GroupBox Header="Enable">
-                <Controls:RadioButtonList SelectedValue="{Binding ConfigurationModel.Enable}"
+                <Controls:RadioButtonList SelectedValue="{Binding Enable}"
                                           SelectedValuePath="Tag">
                     <ListBoxItem Tag="{x:Static Utils:DisplayOption.Both}">Both</ListBoxItem>
                     <ListBoxItem Tag="{x:Static Utils:DisplayOption.Counters}">Only Counters</ListBoxItem>

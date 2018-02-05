@@ -17,13 +17,11 @@
         <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
 
         <DataTemplate x:Key="CounterListView">
-            <local:CounterListView DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}"
-                                   IsEnabled="{Binding ConfigurationModel.Enable, Converter={StaticResource DisplayOptionToEnabled}, ConverterParameter={x:Static Utils:DisplayOption.Counters}}" />
+            <local:CounterListView DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}" />
         </DataTemplate>
 
         <DataTemplate x:Key="SoundListView">
-            <local:SoundListView DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}"
-                                 IsEnabled="{Binding ConfigurationModel.Enable, Converter={StaticResource DisplayOptionToEnabled}, ConverterParameter={x:Static Utils:DisplayOption.Sounds}}" />
+            <local:SoundListView DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}" />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -72,10 +70,10 @@
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ConfigurationModel.Scene}" Value="{x:Static Utils:DisplayOption.Counters}">
+                        <DataTrigger Binding="{Binding ConfigurationModel.Enable}" Value="{x:Static Utils:DisplayOption.Counters}">
                             <Setter Property="ContentTemplate" Value="{StaticResource CounterListView}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ConfigurationModel.Scene}" Value="{x:Static Utils:DisplayOption.Sounds}">
+                        <DataTrigger Binding="{Binding ConfigurationModel.Enable}" Value="{x:Static Utils:DisplayOption.Sounds}">
                             <Setter Property="ContentTemplate" Value="{StaticResource SoundListView}" />
                         </DataTrigger>
                     </Style.Triggers>

@@ -176,6 +176,20 @@ namespace DCSB.ViewModels
             }
         }
 
+        public DisplayOption Enable
+        {
+            get { return _configurationModel.Enable; }
+            set
+            {
+                _configurationModel.Enable = value;
+                RaisePropertyChanged("Enable");
+                if (_configurationModel.Enable != DisplayOption.Sounds && _configurationModel.Enable != DisplayOption.Both)
+                {
+                    _soundManager.Stop();
+                }
+            }
+        }
+
         public IList<OutputDevice> AvailableOutputDevices
         {
             get { return _soundManager.EnumerateDevices(); }

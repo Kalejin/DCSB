@@ -105,17 +105,6 @@ namespace DCSB.Models
             }
         }
 
-        private DisplayOption _scene;
-        public DisplayOption Scene
-        {
-            get { return _scene; }
-            set
-            {
-                _scene = value;
-                RaisePropertyChanged("Scene");
-            }
-        }
-
         private DisplayOption _enable;
         public DisplayOption Enable
         {
