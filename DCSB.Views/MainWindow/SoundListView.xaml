@@ -46,6 +46,7 @@
                     Value="{Binding CurrentVolume}" />
 
             <Controls:IconButton DockPanel.Dock="Right" 
+                                 Margin="3"
                                  Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource volumeIconConverter}, ConverterParameter={StaticResource VolumeIcons}}" 
                                  Command="{Binding MuteCommand}"
                                  Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"

@@ -25,6 +25,8 @@ namespace DCSB.ViewModels
         private KeyboardInput _keyboardInput;
 
         private double _previousVolume;
+        private double _previousPrimaryVolume;
+        private double _previousSecondaryVolume;
 
         private bool _settingsOpened;
         private bool _soundOpened;
@@ -512,6 +514,40 @@ namespace DCSB.ViewModels
             {
                 _previousVolume = CurrentVolume;
                 CurrentVolume = 0;
+            }
+        }
+
+        public ICommand MutePrimaryCommand
+        {
+            get { return new RelayCommand(MutePrimary); }
+        }
+        private void MutePrimary()
+        {
+            if (PrimaryDeviceVolume == 0)
+            {
+                PrimaryDeviceVolume = _previousPrimaryVolume;
+            }
+            else
+            {
+                _previousPrimaryVolume = PrimaryDeviceVolume;
+                PrimaryDeviceVolume = 0;
+            }
+        }
+
+        public ICommand MuteSecondaryCommand
+        {
+            get { return new RelayCommand(MuteSecondary); }
+        }
+        private void MuteSecondary()
+        {
+            if (SecondaryDeviceVolume == 0)
+            {
+                SecondaryDeviceVolume = _previousSecondaryVolume;
+            }
+            else
+            {
+                _previousSecondaryVolume = SecondaryDeviceVolume;
+                SecondaryDeviceVolume = 0;
             }
         }
 

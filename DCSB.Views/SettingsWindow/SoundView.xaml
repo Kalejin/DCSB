@@ -4,11 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
+             xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
+             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300"
              d:DesignWidth="400">
 
     <UserControl.Resources>
+        <Converters:VolumeIconConverter x:Key="volumeIconConverter" />
+        
         <Style x:Key="ListItem" TargetType="{x:Type ListBoxItem}" >
             <Setter Property="Template">
                 <Setter.Value>
@@ -41,6 +45,7 @@
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
+                    
                     <Label Grid.Column="0"
                            Grid.Row="0">First:</Label>
                     <ComboBox Grid.Column="1"
@@ -49,14 +54,37 @@
                               DisplayMemberPath="Name"
                               ItemsSource="{Binding AvailableOutputDevices}"
                               SelectedIndex="{Binding PrimaryOutputDeviceIndex}" />
-                    <Slider Grid.Column="1"
-                            Grid.Row="1"
-                            Margin="3,3,3,10"
-                            DockPanel.Dock="Right"
-                            Maximum="100"
-                            IsMoveToPointEnabled="True"
-                            AutoToolTipPlacement="BottomRight"
-                            Value="{Binding PrimaryDeviceVolume}" />
+                    <DockPanel Grid.Column="1"
+                               Grid.Row="1"
+                               Margin="0,0,0,5">
+                        <Controls:IconButton DockPanel.Dock="Left"
+                                             Margin="3,0,0,0"
+                                             Content="{Binding ElementName=PrimaryVolumeSlider, Path=Value, Converter={StaticResource volumeIconConverter}, ConverterParameter={StaticResource VolumeIcons}}" 
+                                             Command="{Binding MutePrimaryCommand}"
+                                             Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                             Height="{Binding ActualHeight, ElementName=PrimaryVolumeSlider}">
+                            <Controls:IconButton.Style>
+                                <Style TargetType="{x:Type Controls:IconButton}">
+                                    <Style.Setters>
+                                        <Setter Property="ToolTip" Value="Mute" />
+                                    </Style.Setters>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Value, ElementName=PrimaryVolumeSlider}" Value="0">
+                                            <Setter Property="ToolTip" Value="Unmute" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Controls:IconButton.Style>
+                        </Controls:IconButton>
+                        <Slider x:Name="PrimaryVolumeSlider"
+                                Margin="3"
+                                DockPanel.Dock="Right"
+                                Maximum="100"
+                                IsMoveToPointEnabled="True"
+                                AutoToolTipPlacement="BottomRight"
+                                Value="{Binding PrimaryDeviceVolume}" />
+                    </DockPanel>
+
                     <Label Grid.Column="0" 
                            Grid.Row="2">Second:</Label>
                     <ComboBox Grid.Column="1" 
@@ -65,14 +93,35 @@
                               DisplayMemberPath="Name"
                               ItemsSource="{Binding SecondaryOutputDevices}" 
                               SelectedIndex="{Binding SecondaryOutputDeviceIndex}" />
-                    <Slider Grid.Column="1"
-                            Grid.Row="3"
-                            Margin="3"
-                            DockPanel.Dock="Right"
-                            Maximum="100"
-                            IsMoveToPointEnabled="True"
-                            AutoToolTipPlacement="BottomRight"
-                            Value="{Binding SecondaryDeviceVolume}" />
+                    <DockPanel Grid.Column="1"
+                               Grid.Row="3">
+                        <Controls:IconButton DockPanel.Dock="Left"
+                                             Margin="3,0,0,0"
+                                             Content="{Binding ElementName=SecondaryVolumeSlider, Path=Value, Converter={StaticResource volumeIconConverter}, ConverterParameter={StaticResource VolumeIcons}}" 
+                                             Command="{Binding MuteSecondaryCommand}"
+                                             Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                             Height="{Binding ActualHeight, ElementName=SecondaryVolumeSlider}">
+                            <Controls:IconButton.Style>
+                                <Style TargetType="{x:Type Controls:IconButton}">
+                                    <Style.Setters>
+                                        <Setter Property="ToolTip" Value="Mute" />
+                                    </Style.Setters>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Value, ElementName=SecondaryVolumeSlider}" Value="0">
+                                            <Setter Property="ToolTip" Value="Unmute" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Controls:IconButton.Style>
+                        </Controls:IconButton>
+                        <Slider x:Name="SecondaryVolumeSlider"
+                                Margin="3"
+                                DockPanel.Dock="Right"
+                                Maximum="100"
+                                IsMoveToPointEnabled="True"
+                                AutoToolTipPlacement="BottomRight"
+                                Value="{Binding SecondaryDeviceVolume}" />
+                    </DockPanel>
                 </Grid>
             </GroupBox>
         </StackPanel>
