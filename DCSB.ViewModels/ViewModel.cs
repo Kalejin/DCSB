@@ -43,7 +43,9 @@ namespace DCSB.ViewModels
 
             _soundManager = new SoundManager(_configurationModel.PrimaryOutputDevice, _configurationModel.SecondaryOutputDevice)
             {
-                Volume = _configurationModel.Volume,
+                Volume = _configurationModel.Volume / 100f,
+                PrimaryDeviceVolume = _configurationModel.PrimaryDeviceVolume / 100f,
+                SecondaryDeviceVolume = _configurationModel.SecondaryDeviceVolume / 100f,
                 Overlap = _configurationModel.Overlap
             };
             _shortcutManager = new ShortcutManager(_configurationModel, _soundManager);
@@ -160,8 +162,30 @@ namespace DCSB.ViewModels
             set
             {
                 _configurationModel.Volume = (int)value;
-                _soundManager.Volume = _configurationModel.Volume;
+                _soundManager.Volume = _configurationModel.Volume / 100f;
                 RaisePropertyChanged("CurrentVolume");
+            }
+        }
+
+        public double PrimaryDeviceVolume
+        {
+            get { return _configurationModel.PrimaryDeviceVolume; }
+            set
+            {
+                _configurationModel.PrimaryDeviceVolume = (int)value;
+                _soundManager.PrimaryDeviceVolume = _configurationModel.PrimaryDeviceVolume / 100f;
+                RaisePropertyChanged("PrimaryDeviceVolume");
+            }
+        }
+
+        public double SecondaryDeviceVolume
+        {
+            get { return _configurationModel.SecondaryDeviceVolume; }
+            set
+            {
+                _configurationModel.SecondaryDeviceVolume = (int)value;
+                _soundManager.SecondaryDeviceVolume = _configurationModel.SecondaryDeviceVolume / 100f;
+                RaisePropertyChanged("SecondaryDeviceVolume");
             }
         }
 

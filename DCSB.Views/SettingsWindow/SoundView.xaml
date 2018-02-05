@@ -38,6 +38,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Label Grid.Column="0"
                            Grid.Row="0">First:</Label>
@@ -47,14 +49,30 @@
                               DisplayMemberPath="Name"
                               ItemsSource="{Binding AvailableOutputDevices}"
                               SelectedIndex="{Binding PrimaryOutputDeviceIndex}" />
+                    <Slider Grid.Column="1"
+                            Grid.Row="1"
+                            Margin="3,3,3,10"
+                            DockPanel.Dock="Right"
+                            Maximum="100"
+                            IsMoveToPointEnabled="True"
+                            AutoToolTipPlacement="BottomRight"
+                            Value="{Binding PrimaryDeviceVolume}" />
                     <Label Grid.Column="0" 
-                           Grid.Row="1">Second:</Label>
+                           Grid.Row="2">Second:</Label>
                     <ComboBox Grid.Column="1" 
-                              Grid.Row="1"
+                              Grid.Row="2"
                               Margin="3"
                               DisplayMemberPath="Name"
                               ItemsSource="{Binding SecondaryOutputDevices}" 
                               SelectedIndex="{Binding SecondaryOutputDeviceIndex}" />
+                    <Slider Grid.Column="1"
+                            Grid.Row="3"
+                            Margin="3"
+                            DockPanel.Dock="Right"
+                            Maximum="100"
+                            IsMoveToPointEnabled="True"
+                            AutoToolTipPlacement="BottomRight"
+                            Value="{Binding SecondaryDeviceVolume}" />
                 </Grid>
             </GroupBox>
         </StackPanel>

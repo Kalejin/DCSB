@@ -12,12 +12,12 @@ namespace DCSB.SoundPlayer
         private readonly WaveOutEvent _outputDevice;
         private readonly MixingSampleProvider _mixer;
 
-        private int _volumePowBase = 10;
+        private int _volumePowBase = 100;
 
-        public int Volume
+        public float Volume
         {
-            get { return CalculateVolume(_outputDevice.Volume); }
-            set { _outputDevice.Volume = CalculateVolume(value); }
+            get { return RevertVolume(_outputDevice.Volume); }
+            set { _outputDevice.Volume = AdjustVolume(value); }
         }
 
         public bool Overlap { get; set; }
@@ -30,7 +30,7 @@ namespace DCSB.SoundPlayer
             _outputDevice.Play();
         }
 
-        public void PlaySound(string fileName, int volume, bool loop)
+        public void PlaySound(string fileName, float volume, bool loop)
         {
             if (!Overlap)
             {
@@ -114,21 +114,21 @@ namespace DCSB.SoundPlayer
             return new WdlResamplingSampleProvider(input, _mixer.WaveFormat.SampleRate);
         }
 
-        private void AddMixerInput(ISampleProvider input, int volume)
+        private void AddMixerInput(ISampleProvider input, float volume)
         {
             ISampleProvider convertedInput = ConvertToRightSampleRate(ConvertToRightChannelCount(input));
-            VolumeSampleProvider volumeSampleProvider = new VolumeSampleProvider(convertedInput) { Volume = CalculateVolume(volume) };
+            VolumeSampleProvider volumeSampleProvider = new VolumeSampleProvider(convertedInput) { Volume = AdjustVolume(volume) };
             _mixer.AddMixerInput(volumeSampleProvider);
         }
 
-        private float CalculateVolume(int volume)
+        private float AdjustVolume(float volume)
         {
-            return (float)((Math.Pow(_volumePowBase, volume / 100f) - 1) / (_volumePowBase - 1));
+            return (float)((Math.Pow(_volumePowBase, volume) - 1) / (_volumePowBase - 1));
         }
 
-        private int CalculateVolume(float volume)
+        private int RevertVolume(float volume)
         {
-            return (int)(Math.Log(volume * (_volumePowBase - 1) + 1) * 100 / Math.Log(_volumePowBase));
+            return (int)(Math.Log(volume * (_volumePowBase - 1) + 1) / Math.Log(_volumePowBase));
         }
 
         public void Dispose()

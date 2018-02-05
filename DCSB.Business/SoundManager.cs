@@ -11,13 +11,37 @@ namespace DCSB.Business
         private AudioPlaybackEngine _secondarySoundPlayer;
         private Random _random;
 
-        public int Volume
+        private float _volume = 1f;
+        public float Volume
         {
-            get { return _primarySoundPlayer.Volume; }
+            get { return _volume; }
             set
             {
-                _primarySoundPlayer.Volume = value;
-                if (_secondarySoundPlayer != null) _secondarySoundPlayer.Volume = value;
+                _volume = value;
+                _primarySoundPlayer.Volume = _volume * _primaryDeviceVolume;
+                if (_secondarySoundPlayer != null) _secondarySoundPlayer.Volume = _volume * _secondaryDeviceVolume;
+            }
+        }
+
+        private float _primaryDeviceVolume = 1f;
+        public float PrimaryDeviceVolume
+        {
+            get { return _primaryDeviceVolume; }
+            set
+            {
+                _primaryDeviceVolume = value;
+                _primarySoundPlayer.Volume = _volume * _primaryDeviceVolume;
+            }
+        }
+
+        private float _secondaryDeviceVolume = 1f;
+        public float SecondaryDeviceVolume
+        {
+            get { return _secondaryDeviceVolume; }
+            set
+            {
+                _secondaryDeviceVolume = value;
+                if (_secondarySoundPlayer != null) _secondarySoundPlayer.Volume = _volume * _secondaryDeviceVolume;
             }
         }
 
@@ -51,8 +75,8 @@ namespace DCSB.Business
             string file = sound.Files[_random.Next(sound.Files.Count)];
             try
             {
-                _primarySoundPlayer.PlaySound(file, sound.Volume, sound.Loop);
-                if (_secondarySoundPlayer != null) _secondarySoundPlayer.PlaySound(file, sound.Volume, sound.Loop);
+                _primarySoundPlayer.PlaySound(file, sound.Volume / 100f, sound.Loop);
+                if (_secondarySoundPlayer != null) _secondarySoundPlayer.PlaySound(file, sound.Volume / 100f, sound.Loop);
             }
             catch (Exception ex)
             {
