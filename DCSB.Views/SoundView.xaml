@@ -43,10 +43,12 @@
                 CommandParameter="{Binding ConfigurationModel.SelectedPreset.SelectedSound}">...</Button>
 
         <Label Grid.Row="3" Grid.Column="0">Volume:</Label>
-        <Slider Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Maximum="100" AutoToolTipPlacement="BottomRight" IsMoveToPointEnabled="True" 
+        <Slider Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Maximum="100" AutoToolTipPlacement="BottomRight"
+                IsMoveToPointEnabled="True" ToolTip="Change applies next time you play this sound"
                 Value="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Volume}"/>
 
         <Label Grid.Row="4" Grid.Column="0">Loop:</Label>
-        <CheckBox Grid.Row="4" Grid.Column="1" Margin="5" IsChecked="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Loop}" />
+        <CheckBox Grid.Row="4" Grid.Column="1" Margin="5" ToolTip="Change applies next time you play this sound"
+                  IsChecked="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Loop}" />
     </Grid>
 </UserControl>
