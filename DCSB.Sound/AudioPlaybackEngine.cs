@@ -75,6 +75,8 @@ namespace DCSB.SoundPlayer
         public void Stop()
         {
             _mixer.RemoveAllMixerInputs();
+            _outputDevice.Stop();
+            _outputDevice.Init(_mixer);
         }
 
         public IList<OutputDevice> EnumerateDevices()
