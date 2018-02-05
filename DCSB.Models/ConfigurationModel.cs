@@ -17,6 +17,28 @@ namespace DCSB.Models
             }
         }
 
+        private int _primaryDeviceVolume;
+        public int PrimaryDeviceVolume
+        {
+            get { return _primaryDeviceVolume; }
+            set
+            {
+                _primaryDeviceVolume = value;
+                RaisePropertyChanged("PrimaryDeviceVolume");
+            }
+        }
+
+        private int _secondaryDeviceVolume;
+        public int SecondaryDeviceVolume
+        {
+            get { return _secondaryDeviceVolume; }
+            set
+            {
+                _secondaryDeviceVolume = value;
+                RaisePropertyChanged("SecondaryDeviceVolume");
+            }
+        }
+
         private bool _overlap;
         public bool Overlap
         {
@@ -185,6 +207,8 @@ namespace DCSB.Models
             SoundShortcuts.PropertyChanged += (sender, e) => RaisePropertyChanged("SoundShortcuts");
 
             Volume = 100;
+            PrimaryDeviceVolume = 100;
+            SecondaryDeviceVolume = 100;
             WindowHeight = 300;
             WindowWidth = 500;
             CountersWidth = 1;

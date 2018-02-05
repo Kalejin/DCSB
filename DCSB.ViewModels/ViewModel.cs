@@ -25,6 +25,8 @@ namespace DCSB.ViewModels
         private KeyboardInput _keyboardInput;
 
         private double _previousVolume;
+        private double _previousPrimaryVolume;
+        private double _previousSecondaryVolume;
 
         private bool _settingsOpened;
         private bool _soundOpened;
@@ -43,7 +45,9 @@ namespace DCSB.ViewModels
 
             _soundManager = new SoundManager(_configurationModel.PrimaryOutputDevice, _configurationModel.SecondaryOutputDevice)
             {
-                Volume = _configurationModel.Volume,
+                Volume = _configurationModel.Volume / 100f,
+                PrimaryDeviceVolume = _configurationModel.PrimaryDeviceVolume / 100f,
+                SecondaryDeviceVolume = _configurationModel.SecondaryDeviceVolume / 100f,
                 Overlap = _configurationModel.Overlap
             };
             _shortcutManager = new ShortcutManager(_configurationModel, _soundManager);
@@ -160,8 +164,30 @@ namespace DCSB.ViewModels
             set
             {
                 _configurationModel.Volume = (int)value;
-                _soundManager.Volume = _configurationModel.Volume;
+                _soundManager.Volume = _configurationModel.Volume / 100f;
                 RaisePropertyChanged("CurrentVolume");
+            }
+        }
+
+        public double PrimaryDeviceVolume
+        {
+            get { return _configurationModel.PrimaryDeviceVolume; }
+            set
+            {
+                _configurationModel.PrimaryDeviceVolume = (int)value;
+                _soundManager.PrimaryDeviceVolume = _configurationModel.PrimaryDeviceVolume / 100f;
+                RaisePropertyChanged("PrimaryDeviceVolume");
+            }
+        }
+
+        public double SecondaryDeviceVolume
+        {
+            get { return _configurationModel.SecondaryDeviceVolume; }
+            set
+            {
+                _configurationModel.SecondaryDeviceVolume = (int)value;
+                _soundManager.SecondaryDeviceVolume = _configurationModel.SecondaryDeviceVolume / 100f;
+                RaisePropertyChanged("SecondaryDeviceVolume");
             }
         }
 
@@ -488,6 +514,40 @@ namespace DCSB.ViewModels
             {
                 _previousVolume = CurrentVolume;
                 CurrentVolume = 0;
+            }
+        }
+
+        public ICommand MutePrimaryCommand
+        {
+            get { return new RelayCommand(MutePrimary); }
+        }
+        private void MutePrimary()
+        {
+            if (PrimaryDeviceVolume == 0)
+            {
+                PrimaryDeviceVolume = _previousPrimaryVolume;
+            }
+            else
+            {
+                _previousPrimaryVolume = PrimaryDeviceVolume;
+                PrimaryDeviceVolume = 0;
+            }
+        }
+
+        public ICommand MuteSecondaryCommand
+        {
+            get { return new RelayCommand(MuteSecondary); }
+        }
+        private void MuteSecondary()
+        {
+            if (SecondaryDeviceVolume == 0)
+            {
+                SecondaryDeviceVolume = _previousSecondaryVolume;
+            }
+            else
+            {
+                _previousSecondaryVolume = SecondaryDeviceVolume;
+                SecondaryDeviceVolume = 0;
             }
         }
 
