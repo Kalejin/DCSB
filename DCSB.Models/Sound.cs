@@ -1,14 +1,15 @@
 ﻿using DCSB.Utils;
 using System.Collections.ObjectModel;
 using System.Xml.Serialization;
-using System.Collections.Specialized;
 using System.IO;
 using System.Collections.Generic;
 using GalaSoft.MvvmLight;
+using System;
+using System.Linq;
 
 namespace DCSB.Models
 {
-    public class Sound : ObservableObject, IBindable
+    public class Sound : ObservableObject, IBindable, ICloneable
     {
         private string _name;
         public string Name
@@ -87,6 +88,14 @@ namespace DCSB.Models
             _files.CollectionChanged += (sender, e) => ValidateFiles();
 
             Volume = 100;
+        }
+
+        public object Clone()
+        {
+            Sound clonedSound = new Sound() { Name = Name, Volume = Volume, Loop = Loop };
+            foreach (string file in Files) clonedSound.Files.Add(file);
+            foreach (VKey key in Keys) clonedSound.Keys.Add(key);
+            return clonedSound;
         }
 
         private void ValidateFiles()

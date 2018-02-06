@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:DCSB"
         xmlns:Views="clr-namespace:DCSB.Views.SettingsWindow;assembly=DCSB.Views"
         Title="Settings"
-        Width="350"
+        Width="450"
         SizeToContent="Height"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
@@ -21,7 +21,7 @@
         </TabItem>
 
         <TabItem Header="Presets">
-            <Views:PresetView />
+            <Views:PresetConfigurationView DataContext="{Binding PresetConfigurationViewModel}" />
         </TabItem>
 
         <TabItem Header="Other">

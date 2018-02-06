@@ -21,8 +21,9 @@ namespace DCSB.ViewModels
         private ShortcutManager _shortcutManager;
         private SoundManager _soundManager;
         private UpdateManager _updateManager;
-
         private KeyboardInput _keyboardInput;
+
+        private PresetConfigurationViewModel _presetConfigurationViewModel;
 
         private double _previousVolume;
         private double _previousPrimaryVolume;
@@ -40,7 +41,7 @@ namespace DCSB.ViewModels
         {
             _configurationManager = new ConfigurationManager();
             _configurationModel = _configurationManager.Load();
-            if (_configurationModel.PresetCollection.Count == 0) AddPreset();
+            if (_configurationModel.PresetCollection.Count == 0) _configurationModel.PresetCollection.Add(new Preset() { Name = "New Preset" } );
             _openFileManager = new OpenFileManager();
 
             _soundManager = new SoundManager(_configurationModel.PrimaryOutputDevice, _configurationModel.SecondaryOutputDevice)
@@ -52,6 +53,8 @@ namespace DCSB.ViewModels
             };
             _shortcutManager = new ShortcutManager(_configurationModel, _soundManager);
             _updateManager = new UpdateManager();
+
+            _presetConfigurationViewModel = new PresetConfigurationViewModel(_configurationModel);
 
             _configurationModel.PropertyChanged += (sender, e) => _configurationManager.Save((ConfigurationModel)sender);
 
@@ -81,6 +84,11 @@ namespace DCSB.ViewModels
         public ConfigurationModel ConfigurationModel
         {
             get { return _configurationModel; }
+        }
+
+        public PresetConfigurationViewModel PresetConfigurationViewModel
+        {
+            get { return _presetConfigurationViewModel; }
         }
 
         public GridLength CountersWidth
@@ -282,39 +290,6 @@ namespace DCSB.ViewModels
         private async void CheckForUpdates()
         {
             await _updateManager.ManualUpdateCheck(Version);
-        }
-
-        public ICommand AddPresetCommand
-        {
-            get { return new RelayCommand(AddPreset); }
-        }
-        private void AddPreset()
-        {
-            Preset preset = new Preset() { Name = "New Preset" };
-            _configurationModel.PresetCollection.Add(preset);
-            _configurationModel.SelectedPreset = preset;
-        }
-
-        public ICommand RemovePresetCommand
-        {
-            get { return new RelayCommand(RemovePreset); }
-        }
-        private void RemovePreset()
-        {
-            if (_configurationModel.PresetCollection.Count == 1)
-            {
-                AddPreset();
-                _configurationModel.PresetCollection.RemoveAt(0);
-            }
-            else
-            {
-                Preset selected = _configurationModel.SelectedPreset;
-                if (_configurationModel.SelectedPresetIndex == _configurationModel.PresetCollection.Count - 1)
-                {
-                    _configurationModel.SelectedPresetIndex--;
-                }
-                _configurationModel.PresetCollection.Remove(selected);
-            }
         }
 
         public ICommand PresetSelectedCommand

@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="DCSB.Views.SettingsWindow.PresetConfigurationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
+             xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
+             xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+             mc:Ignorable="d" 
+             d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
+    </UserControl.Resources>
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <GroupBox Header="Presets">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <local:PresetView Grid.Column="0"
+                                      DataContext="{Binding LeftPresetViewModel}" />
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Vertical"
+                                VerticalAlignment="Center">
+                        <Controls:IconButton Height="20"
+                                             Width="20"
+                                             ToolTip="Copy selected from left to right"
+                                             Content="{StaticResource RightArrowIcon}" 
+                                             Command="{Binding CopyCommand}" />
+                        <Controls:IconButton Height="20"
+                                             Width="20"
+                                             ToolTip="Copy selected from right to left"
+                                             Content="{StaticResource LeftArrowIcon}" 
+                                             Command="{Binding CopyCommand}" />
+                    </StackPanel>
+
+                    <local:PresetView Grid.Column="2"
+                                      DataContext="{Binding RightPresetViewModel}" />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
