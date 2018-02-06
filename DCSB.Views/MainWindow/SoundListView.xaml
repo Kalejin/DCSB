@@ -82,7 +82,7 @@
             <Controls:IconButton DockPanel.Dock="Right" 
                                  Content="{StaticResource PlayIcon}" 
                                  Margin="2"
-                                 Command="{Binding PlayCommand}"
+                                 Command="{Binding ContinueCommand}"
                                  ToolTip="Play" />
             <Controls:IconButton DockPanel.Dock="Right" 
                                  Content="{StaticResource PauseIcon}" 
@@ -99,7 +99,7 @@
 
         <DataGrid ItemsSource="{Binding ConfigurationModel.SelectedPreset.SoundCollection}" 
                   SelectedItem="{Binding ConfigurationModel.SelectedPreset.SelectedSound, Mode=TwoWay}"
-                  Interactivity:Commands.DoubleClickCommand="{Binding OpenSoundCommand}"
+                  Interactivity:Commands.DoubleClickCommand="{Binding PlayCommand}"
                   AutoGenerateColumns="False"
                   CanUserReorderColumns="False"
                   SelectionMode="Single"
