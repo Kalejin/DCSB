@@ -59,7 +59,6 @@
 
         <DataGrid ItemsSource="{Binding ConfigurationModel.SelectedPreset.CounterCollection}" 
                   SelectedItem="{Binding ConfigurationModel.SelectedPreset.SelectedCounter, Mode=TwoWay}"
-                  Interactivity:Commands.DoubleClickCommand="{Binding OpenCounterCommand}"
                   AutoGenerateColumns="False"
                   CanUserReorderColumns="False"
                   SelectionMode="Single"
