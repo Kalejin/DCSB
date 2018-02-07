@@ -8,16 +8,31 @@ namespace DCSB.Business
 {
     public class ShortcutManager
     {
+        private ApplicationStateModel _applicationStateModel;
         private ConfigurationModel _configurationModel;
         private SoundManager _soundManager;
 
         private Random _random;
 
-        public ShortcutManager(ConfigurationModel configurationModel, SoundManager soundManager)
+        public ShortcutManager(ApplicationStateModel applicationStateModel, ConfigurationModel configurationModel, SoundManager soundManager)
         {
+            _applicationStateModel = applicationStateModel;
             _configurationModel = configurationModel;
             _soundManager = soundManager;
             _random = new Random();
+        }
+
+        public void KeyUp(VKey key, List<VKey> pressedKeys)
+        {
+            if (_applicationStateModel.ModifiedBindable != null)
+            {
+                _applicationStateModel.ModifiedBindable.Keys.Clear();
+                foreach (VKey pressedKey in pressedKeys)
+                    _applicationStateModel.ModifiedBindable.Keys.Add(pressedKey);
+
+                _applicationStateModel.BindKeysOpened = false;
+                _applicationStateModel.ModifiedBindable = null;
+            }
         }
 
         public void KeyDown(VKey key, List<VKey> pressedKeys)

@@ -61,29 +61,56 @@
                   Height="130"
                   Margin="3"
                   DisplayMemberPath="Name"
-                  ItemsSource="{Binding SelectedPreset.CounterCollection}">
+                  ItemsSource="{Binding SelectedPreset.CounterCollection}"
+                  Interactivity:AttachedProperties.SelectedItems="{Binding SelectedCounters}">
+
+            <ListView.Resources>
+                <ContextMenu x:Key="RowMenu" DataContext="{Binding}">
+                    <MenuItem Header="Edit" 
+                              Command="{Binding DataContext.OpenCounterCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                    <MenuItem Header="Remove" 
+                              Command="{Binding DataContext.RemoveCountersCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                </ContextMenu>
+            </ListView.Resources>
+
+            <ListView.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding RemoveCountersCommand}" />
+            </ListView.InputBindings>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
         </ListView>
 
         <ListView Grid.Row="2"
                   Height="130"
                   Margin="3"
                   DisplayMemberPath="Name"
-                  ItemsSource="{Binding SelectedPreset.SoundCollection}">
+                  ItemsSource="{Binding SelectedPreset.SoundCollection}"
+                  Interactivity:AttachedProperties.SelectedItems="{Binding SelectedSounds}">
 
-            <!--<ListView.Resources>
+            <ListView.Resources>
                 <ContextMenu x:Key="RowMenu" DataContext="{Binding}">
                     <MenuItem Header="Edit" 
-                              Command="{Binding DataContext.OpenSoundCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                              Command="{Binding DataContext.OpenSoundCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
                     <MenuItem Header="Remove" 
-                              Command="{Binding DataContext.RemoveSoundCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                              Command="{Binding DataContext.RemoveSoundsCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
                 </ContextMenu>
             </ListView.Resources>
+
+            <ListView.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding RemoveSoundsCommand}" />
+            </ListView.InputBindings>
 
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
                 </Style>
-            </ListView.ItemContainerStyle>-->
+            </ListView.ItemContainerStyle>
+            
         </ListView>
     </Grid>
 </UserControl>
