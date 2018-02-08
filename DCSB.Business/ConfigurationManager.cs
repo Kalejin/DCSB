@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Timers;
+using System.Threading;
 using System.Xml.Serialization;
 
 namespace DCSB.Business
 {
-    public class ConfigurationManager
+    public class ConfigurationManager : IDisposable
     {
         private const string DirectoryName = "DCSB";
         private const string FileName = "config.xml";
@@ -18,15 +18,8 @@ namespace DCSB.Business
         private Timer _timer;
         private ConfigurationModel _model;
 
-        public ConfigurationManager()
+        private void SaveCallback(object state)
         {
-            _timer = new Timer(1000);
-            _timer.Elapsed += Save;
-        }
-
-        private void Save(object sender, ElapsedEventArgs e)
-        {
-            Debug.WriteLine("Saved configuration");
             XmlSerializer serializer = new XmlSerializer(typeof(ConfigurationModel));
 
             if (!File.Exists(ConfigPath))
@@ -37,7 +30,9 @@ namespace DCSB.Business
             {
                 serializer.Serialize(stream, _model);
             }
-            _timer.Stop();
+            Debug.WriteLine("Saved configuration");
+            _timer.Dispose();
+            _timer = null;
         }
 
         public ConfigurationModel Load()
@@ -61,9 +56,9 @@ namespace DCSB.Business
         public void Save(ConfigurationModel model)
         {
             _model = model;
-            if (!_timer.Enabled)
+            if (_timer == null)
             {
-                _timer.Start();
+                _timer = new Timer(SaveCallback, null, 1000, Timeout.Infinite);
             }
         }
 
@@ -81,6 +76,15 @@ namespace DCSB.Business
             }
 
             File.Create(ConfigPath, 1, FileOptions.None, security).Close();
+        }
+
+        public void Dispose()
+        {
+            if (_timer != null)
+            {
+                _timer.Dispose();
+                SaveCallback(null);
+            }
         }
     }
 }

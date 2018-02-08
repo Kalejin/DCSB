@@ -82,6 +82,10 @@ namespace DCSB.Business
             if (preset != null)
             {
                 _configurationModel.SelectedPreset = preset;
+                foreach (Counter counter in preset.CounterCollection)
+                {
+                    counter.ReadFromFile();
+                }
             }
         }
 

@@ -249,6 +249,10 @@ namespace DCSB.ViewModels
         private void PresetSelected(Preset selectedPreset)
         {
             _configurationModel.SelectedPreset = selectedPreset;
+            foreach (Counter counter in selectedPreset.CounterCollection)
+            {
+                counter.ReadFromFile();
+            }
         }
 
         public ICommand OpenSettingsCommand
@@ -334,6 +338,7 @@ namespace DCSB.ViewModels
             Counter counter = new Counter();
             _configurationModel.SelectedPreset.CounterCollection.Add(counter);
             _configurationModel.SelectedPreset.SelectedCounter = counter;
+            _applicationStateModel.ModifiedCounter = counter;
             _applicationStateModel.CounterOpened = true;
         }
 
@@ -487,6 +492,7 @@ namespace DCSB.ViewModels
             Sound sound = new Sound();
             _configurationModel.SelectedPreset.SelectedSound = sound;
             _configurationModel.SelectedPreset.SoundCollection.Add(sound);
+            _applicationStateModel.ModifiedSound = sound;
             _applicationStateModel.SoundOpened = true;
         }
 
@@ -567,6 +573,15 @@ namespace DCSB.ViewModels
             _applicationStateModel.BindKeysOpened = false;
             _applicationStateModel.ModifiedBindable.Keys.Clear();
             _applicationStateModel.ModifiedBindable = null;
+        }
+
+        public ICommand ClosingCommand
+        {
+            get { return new RelayCommand(Closing); }
+        }
+        private void Closing()
+        {
+            _configurationManager.Dispose();
         }
 
         private bool AreCountersEnabled()

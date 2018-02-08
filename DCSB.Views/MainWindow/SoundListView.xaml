@@ -139,6 +139,7 @@
                                     IsReadOnly="True" 
                                     Binding="{Binding Name}" />
                 <DataGridTemplateColumn Header="Keys"
+                                        IsReadOnly="True"
                                         Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

@@ -73,6 +73,13 @@
                 </ContextMenu>
             </ListView.Resources>
 
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add" 
+                              Command="{Binding AddCounterCommand}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+
             <ListView.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding RemoveCountersCommand}" />
             </ListView.InputBindings>
@@ -100,6 +107,13 @@
                               Command="{Binding DataContext.RemoveSoundsCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
                 </ContextMenu>
             </ListView.Resources>
+
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add" 
+                              Command="{Binding AddSoundCommand}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
 
             <ListView.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding RemoveSoundsCommand}" />

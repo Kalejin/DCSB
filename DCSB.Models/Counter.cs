@@ -93,7 +93,7 @@ namespace DCSB.Models
             return new Counter() { Name = Name, Increment = Increment, Format = Format, File = File, Count = Count };
         }
 
-        private void WriteToFile()
+        public void WriteToFile()
         {
             Error = null;
             if (System.IO.File.Exists(File))
@@ -123,7 +123,7 @@ namespace DCSB.Models
             }
         }
 
-        private void ReadFromFile()
+        public void ReadFromFile()
         {
             Error = null;
             if (System.IO.File.Exists(File))

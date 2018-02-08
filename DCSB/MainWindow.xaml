@@ -15,6 +15,12 @@
         Height="{Binding ConfigurationModel.WindowHeight, Mode=TwoWay}"
         Width="{Binding ConfigurationModel.WindowWidth, Mode=TwoWay}">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <cmd:EventToCommand Command="{Binding ClosingCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <i:Interaction.Behaviors>
         <Interactivity:OpenCloseWindowBehavior WindowType="local:SettingsWindow" 
                                                Open="{Binding ApplicationStateModel.SettingsOpened, Mode=TwoWay}" 

@@ -146,6 +146,40 @@ namespace DCSB.ViewModels
             _applicationStateModel.ModifiedBindable = null;
         }
 
+        public ICommand AddCounterCommand
+        {
+            get { return new RelayCommand(AddCounter); }
+        }
+        private void AddCounter()
+        {
+            if (SelectedPreset != null)
+            {
+                Counter counter = new Counter();
+                SelectedPreset.CounterCollection.Add(counter);
+                SelectedCounters.Clear();
+                SelectedCounters.Add(counter);
+                _applicationStateModel.ModifiedCounter = counter;
+                _applicationStateModel.CounterOpened = true;
+            }
+        }
+
+        public ICommand AddSoundCommand
+        {
+            get { return new RelayCommand(AddSound); }
+        }
+        private void AddSound()
+        {
+            if (SelectedPreset != null)
+            {
+                Sound sound = new Sound();
+                SelectedPreset.SoundCollection.Add(sound);
+                SelectedSounds.Clear();
+                SelectedSounds.Add(sound);
+                _applicationStateModel.ModifiedSound = sound;
+                _applicationStateModel.SoundOpened = true;
+            }
+        }
+
         public ICommand RemoveCountersCommand
         {
             get { return new RelayCommand(RemoveCounters); }
