@@ -66,6 +66,7 @@ Section
     File "..\DCSB\bin\Release\NAudio.dll"
     File "..\DCSB\bin\Release\NAudio.Vorbis.dll"
     File "..\DCSB\bin\Release\NVorbis.dll"
+    File "..\DCSB\bin\Release\Octokit.dll"
     File "..\DCSB\bin\Release\System.Windows.Interactivity.dll"
  
     # create a shortcut named "new shortcut" in the start menu programs directory
@@ -121,6 +122,7 @@ Section "uninstall"
     Delete "$INSTDIR\NAudio.dll"
     Delete "$INSTDIR\NAudio.Vorbis.dll"
     Delete "$INSTDIR\NVorbis.dll"
+    Delete "$INSTDIR\Octokit.dll"
     Delete "$INSTDIR\System.Windows.Interactivity.dll"
     StrCpy $0 "$INSTDIR"
     Call un.DeleteDirIfEmpty
