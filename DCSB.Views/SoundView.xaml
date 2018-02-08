@@ -25,30 +25,30 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0">Name:</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Text="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Name}" />
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Text="{Binding ApplicationStateModel.ModifiedSound.Name}" />
 
         <Label Grid.Row="1" Grid.Column="0">File/s:</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Margin="5" IsReadOnly="True" AcceptsReturn="True" MaxHeight="250" 
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Cursor="Arrow"
-                 Text="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Files, Converter={StaticResource concatStringsConverter}, ConverterParameter='&#x0a;'}"
+                 Text="{Binding ApplicationStateModel.ModifiedSound.Files, Converter={StaticResource concatStringsConverter}, ConverterParameter='&#x0a;'}"
                  Interactivity:Commands.DoubleClickCommand="{Binding OpenSoundFileDialogCommand}" />
         <Button Grid.Row="1" Grid.Column="2" Margin="0,5,5,5" Width="20" Command="{Binding OpenSoundFileDialogCommand}">...</Button>
 
         <Label Grid.Row="2" Grid.Column="0">Key/s:</Label>
         <TextBox Grid.Row="2" Grid.Column="1" Margin="5" IsReadOnly="True"
-                 Text="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Keys, Converter={StaticResource vKeysToStringConverter}}"
+                 Text="{Binding ApplicationStateModel.ModifiedSound.Keys, Converter={StaticResource vKeysToStringConverter}}"
                  Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                 Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.SelectedPreset.SelectedSound}" />
+                 Interactivity:Commands.DoubleClickCommandParameter="{Binding ApplicationStateModel.ModifiedSound}" />
         <Button Grid.Row="2" Grid.Column="2" Margin="0,5,5,5" Width="20" Command="{Binding BindKeysCommand}" 
-                CommandParameter="{Binding ConfigurationModel.SelectedPreset.SelectedSound}">...</Button>
+                CommandParameter="{Binding ApplicationStateModel.ModifiedSound}">...</Button>
 
         <Label Grid.Row="3" Grid.Column="0">Volume:</Label>
         <Slider Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Maximum="100" AutoToolTipPlacement="BottomRight"
                 IsMoveToPointEnabled="True" ToolTip="Change applies next time you play this sound"
-                Value="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Volume}"/>
+                Value="{Binding ApplicationStateModel.ModifiedSound.Volume}"/>
 
         <Label Grid.Row="4" Grid.Column="0">Loop:</Label>
         <CheckBox Grid.Row="4" Grid.Column="1" Margin="5" ToolTip="Change applies next time you play this sound"
-                  IsChecked="{Binding ConfigurationModel.SelectedPreset.SelectedSound.Loop}" />
+                  IsChecked="{Binding ApplicationStateModel.ModifiedSound.Loop}" />
     </Grid>
 </UserControl>

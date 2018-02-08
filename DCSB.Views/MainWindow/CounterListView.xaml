@@ -98,6 +98,7 @@
                                     IsReadOnly="True" 
                                     Binding="{Binding Path=Name}" />
                 <DataGridTemplateColumn Header="Count"
+                                        IsReadOnly="True"
                                         Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

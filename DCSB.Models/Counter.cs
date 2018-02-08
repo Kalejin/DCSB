@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace DCSB.Models
 {
-    public class Counter : ObservableObject
+    public class Counter : ObservableObject, ICloneable
     {
         private string _name;
         [XmlElement(Order = 1)]
@@ -88,7 +88,12 @@ namespace DCSB.Models
             Increment = 1;
         }
 
-        private void WriteToFile()
+        public object Clone()
+        {
+            return new Counter() { Name = Name, Increment = Increment, Format = Format, File = File, Count = Count };
+        }
+
+        public void WriteToFile()
         {
             Error = null;
             if (System.IO.File.Exists(File))
@@ -118,7 +123,7 @@ namespace DCSB.Models
             }
         }
 
-        private void ReadFromFile()
+        public void ReadFromFile()
         {
             Error = null;
             if (System.IO.File.Exists(File))

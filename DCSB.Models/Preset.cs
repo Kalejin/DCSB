@@ -2,10 +2,12 @@
 using DCSB.Utils;
 using System.Collections.ObjectModel;
 using System.Xml.Serialization;
+using System;
+using System.Linq;
 
 namespace DCSB.Models
 {
-    public class Preset : ObservableObject, IBindable
+    public class Preset : ObservableObject, IBindable, ICloneable
     {
         private ObservableCollection<VKey> _keys;
         public ObservableCollection<VKey> Keys
@@ -86,6 +88,15 @@ namespace DCSB.Models
             CounterCollection.CollectionChanged += (sender, e) => RaisePropertyChanged("SelectedCounter");
             SoundCollection.CollectionChanged += (sender, e) => RaisePropertyChanged("SoundCollection");
             SoundCollection.CollectionChanged += (sender, e) => RaisePropertyChanged("SelectedSound");
+        }
+
+        public object Clone()
+        {
+            Preset clonedPreset = new Preset() { Name = $"{Name} copy" };
+            foreach (VKey key in Keys) clonedPreset.Keys.Add(key);
+            foreach (Counter counter in CounterCollection) clonedPreset.CounterCollection.Add((Counter)counter.Clone());
+            foreach (Sound sound in SoundCollection) clonedPreset.SoundCollection.Add((Sound)sound.Clone());
+            return clonedPreset;
         }
     }
 }

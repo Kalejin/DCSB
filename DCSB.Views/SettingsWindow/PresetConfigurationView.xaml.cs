@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace DCSB.Views.SettingsWindow
 {
     /// <summary>
-    /// Interaction logic for Preset.xaml
+    /// Interaction logic for PresetView.xaml
     /// </summary>
-    public partial class PresetView : UserControl
+    public partial class PresetConfigurationView : UserControl
     {
-        public PresetView()
+        public PresetConfigurationView()
         {
             InitializeComponent();
         }

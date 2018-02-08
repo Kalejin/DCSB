@@ -4,50 +4,127 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
+             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
              xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
              xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
-             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="300"
              d:DesignWidth="300">
 
     <UserControl.Resources>
         <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
     </UserControl.Resources>
-    
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel>
-            <GroupBox Header="Presets">
-                <StackPanel>
-                    <ComboBox ItemsSource="{Binding ConfigurationModel.PresetCollection}"
-                              SelectedItem="{Binding ConfigurationModel.SelectedPreset}"
-                              DisplayMemberPath="Name" />
-                    <DockPanel>
-                        <Controls:IconButton DockPanel.Dock="Right" 
-                                             Margin="2" 
-                                             ToolTip="Remove Preset"
-                                             Content="{StaticResource RemoveIcon}" 
-                                             Command="{Binding RemovePresetCommand}" />
-                        <Controls:IconButton DockPanel.Dock="Right" 
-                                             Margin="2" 
-                                             ToolTip="Add Preset"
-                                             Content="{StaticResource AddIcon}"
-                                             Command="{Binding AddPresetCommand}" />
-                        <TextBox Name="NameField"
-                                 DockPanel.Dock="Left"
-                                 Margin="0,5"
-                                 Text="{Binding ConfigurationModel.SelectedPreset.Name, UpdateSourceTrigger=PropertyChanged}" />
-                    </DockPanel>
-                    <DockPanel>
-                        <Button DockPanel.Dock="Right" Width="20" Height="{Binding ActualHeight, ElementName=NameField}" Command="{Binding BindKeysCommand}" 
-                                CommandParameter="{Binding ConfigurationModel.SelectedPreset}" Margin="5,0,0,0">...</Button>
-                        <TextBox IsReadOnly="True" Cursor="Arrow" Height="{Binding ActualHeight, ElementName=NameField}"
-                                 Text="{Binding ConfigurationModel.SelectedPreset.Keys, Converter={StaticResource vKeysToStringConverter}}"
-                                 Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                                 Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.SelectedPreset}" />
-                    </DockPanel>
-                </StackPanel>
-            </GroupBox>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="3">
+            <ComboBox DisplayMemberPath="Name"
+                      SelectedItem="{Binding SelectedPreset}"
+                      ItemsSource="{Binding ConfigurationModel.PresetCollection}" />
+            <DockPanel>
+                <Controls:IconButton DockPanel.Dock="Right" 
+                                     Margin="2" 
+                                     ToolTip="Remove Preset"
+                                     Content="{StaticResource RemoveIcon}" 
+                                     Command="{Binding RemovePresetCommand}" />
+                <Controls:IconButton DockPanel.Dock="Right" 
+                                     Margin="2" 
+                                     ToolTip="Add Preset"
+                                     Content="{StaticResource AddIcon}"
+                                     Command="{Binding AddPresetCommand}" />
+                <Controls:IconButton DockPanel.Dock="Right" 
+                                     Margin="2" 
+                                     ToolTip="Copy Preset"
+                                     Content="{StaticResource CopyIcon}"
+                                     Command="{Binding ClonePresetCommand}" />
+                <TextBox Name="NameField"
+                         DockPanel.Dock="Left"
+                         Margin="0,5"
+                         Text="{Binding SelectedPreset.Name}" />
+            </DockPanel>
+
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Width="20" Margin="5,0,0,0" Height="{Binding ActualHeight, ElementName=NameField}" 
+                        Command="{Binding BindKeysCommand}" CommandParameter="{Binding SelectedPreset}">...</Button>
+                <TextBox IsReadOnly="True" Cursor="Arrow" Height="{Binding ActualHeight, ElementName=NameField}"
+                         Text="{Binding SelectedPreset.Keys, Converter={StaticResource vKeysToStringConverter}}"
+                         Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
+                         Interactivity:Commands.DoubleClickCommandParameter="{Binding SelectedPreset}" />
+            </DockPanel>
         </StackPanel>
-    </ScrollViewer>
+
+        <ListView Grid.Row="1"
+                  Height="130"
+                  Margin="3"
+                  DisplayMemberPath="Name"
+                  ItemsSource="{Binding SelectedPreset.CounterCollection}"
+                  Interactivity:AttachedProperties.SelectedItems="{Binding SelectedCounters}">
+
+            <ListView.Resources>
+                <ContextMenu x:Key="RowMenu" DataContext="{Binding}">
+                    <MenuItem Header="Edit" 
+                              Command="{Binding DataContext.OpenCounterCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                    <MenuItem Header="Remove" 
+                              Command="{Binding DataContext.RemoveCountersCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                </ContextMenu>
+            </ListView.Resources>
+
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add" 
+                              Command="{Binding AddCounterCommand}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+
+            <ListView.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding RemoveCountersCommand}" />
+            </ListView.InputBindings>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+        </ListView>
+
+        <ListView Grid.Row="2"
+                  Height="130"
+                  Margin="3"
+                  DisplayMemberPath="Name"
+                  ItemsSource="{Binding SelectedPreset.SoundCollection}"
+                  Interactivity:AttachedProperties.SelectedItems="{Binding SelectedSounds}">
+
+            <ListView.Resources>
+                <ContextMenu x:Key="RowMenu" DataContext="{Binding}">
+                    <MenuItem Header="Edit" 
+                              Command="{Binding DataContext.OpenSoundCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                    <MenuItem Header="Remove" 
+                              Command="{Binding DataContext.RemoveSoundsCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                </ContextMenu>
+            </ListView.Resources>
+
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add" 
+                              Command="{Binding AddSoundCommand}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+
+            <ListView.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding RemoveSoundsCommand}" />
+            </ListView.InputBindings>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            
+        </ListView>
+    </Grid>
 </UserControl>

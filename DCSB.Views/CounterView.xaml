@@ -29,22 +29,22 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0">Name:</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="5" Text="{Binding ConfigurationModel.SelectedPreset.SelectedCounter.Name}" />
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="5" Text="{Binding ApplicationStateModel.ModifiedCounter.Name}" />
 
         <Label Grid.Row="1" Grid.Column="0">File:</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" IsReadOnly="True" Cursor="Arrow"
-                 VerticalScrollBarVisibility="Auto" Text="{Binding ConfigurationModel.SelectedPreset.SelectedCounter.File}" 
+                 VerticalScrollBarVisibility="Auto" Text="{Binding ApplicationStateModel.ModifiedCounter.File}" 
                  Interactivity:Commands.DoubleClickCommand="{Binding OpenCounterFileDialogCommand}" />
         <Button Grid.Row="1" Grid.Column="3" Margin="0,5,5,5" Width="20" Command="{Binding OpenCounterFileDialogCommand}">...</Button>
 
         <Label Grid.Row="2" Grid.Column="0">Count:</Label>
-        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="5" Text="{Binding ConfigurationModel.SelectedPreset.SelectedCounter.Count}" x:Name="count" />
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="5" Text="{Binding ApplicationStateModel.ModifiedCounter.Count}" x:Name="count" />
 
         <Label Grid.Row="3" Grid.Column="0">Increment:</Label>
-        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Margin="5" Text="{Binding ConfigurationModel.SelectedPreset.SelectedCounter.Increment}" />
+        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Margin="5" Text="{Binding ApplicationStateModel.ModifiedCounter.Increment}" />
 
         <Label Grid.Row="4" Grid.Column="0">Format:</Label>
-        <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding ConfigurationModel.SelectedPreset.SelectedCounter.Format}" x:Name="format" />
+        <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding ApplicationStateModel.ModifiedCounter.Format}" x:Name="format" />
         <Label Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2">
             <Label.Content>
                 <MultiBinding Converter="{StaticResource stringFormatConverter}">

@@ -39,5 +39,15 @@
           Stretch="Uniform" Data="M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M
           12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A
           2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z" />
+
+    <Path x:Shared="False" x:Key="CopyIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H
+          4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
+
+    <Path x:Shared="False" x:Key="RightArrowIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M4,15V9H12V4.16L19.84,12L12,19.84V15H4Z" />
+
+    <Path x:Shared="False" x:Key="LeftArrowIcon" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+          Stretch="Uniform" Data="M20,9V15H12V19.84L4.16,12L12,4.16V9H20Z" />
     
 </ResourceDictionary>

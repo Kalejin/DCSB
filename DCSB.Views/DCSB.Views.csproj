@@ -72,6 +72,9 @@
     <Compile Include="SettingsWindow\PresetView.xaml.cs">
       <DependentUpon>PresetView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettingsWindow\PresetConfigurationView.xaml.cs">
+      <DependentUpon>PresetConfigurationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsWindow\SoundView.xaml.cs">
       <DependentUpon>SoundView.xaml</DependentUpon>
     </Compile>
@@ -105,6 +108,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsWindow\PresetView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsWindow\PresetConfigurationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

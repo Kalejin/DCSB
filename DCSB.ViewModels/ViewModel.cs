@@ -15,32 +15,28 @@ namespace DCSB.ViewModels
 {
     public class ViewModel : ObservableObject
     {
+        private ApplicationStateModel _applicationStateModel;
         private ConfigurationModel _configurationModel;
+
         private ConfigurationManager _configurationManager;
         private OpenFileManager _openFileManager;
         private ShortcutManager _shortcutManager;
         private SoundManager _soundManager;
         private UpdateManager _updateManager;
-
         private KeyboardInput _keyboardInput;
+
+        private PresetConfigurationViewModel _presetConfigurationViewModel;
 
         private double _previousVolume;
         private double _previousPrimaryVolume;
         private double _previousSecondaryVolume;
 
-        private bool _settingsOpened;
-        private bool _soundOpened;
-        private bool _counterOpened;
-        private bool _bindKeysOpened;
-        private bool _aboutOpened;
-
-        private IBindable _modifiedBindable;
-
         public ViewModel()
         {
+            _applicationStateModel = new ApplicationStateModel();
             _configurationManager = new ConfigurationManager();
             _configurationModel = _configurationManager.Load();
-            if (_configurationModel.PresetCollection.Count == 0) AddPreset();
+            if (_configurationModel.PresetCollection.Count == 0) _configurationModel.PresetCollection.Add(new Preset() { Name = "New Preset" } );
             _openFileManager = new OpenFileManager();
 
             _soundManager = new SoundManager(_configurationModel.PrimaryOutputDevice, _configurationModel.SecondaryOutputDevice)
@@ -50,8 +46,10 @@ namespace DCSB.ViewModels
                 SecondaryDeviceVolume = _configurationModel.SecondaryDeviceVolume / 100f,
                 Overlap = _configurationModel.Overlap
             };
-            _shortcutManager = new ShortcutManager(_configurationModel, _soundManager);
+            _shortcutManager = new ShortcutManager(_applicationStateModel, _configurationModel, _soundManager);
             _updateManager = new UpdateManager();
+
+            _presetConfigurationViewModel = new PresetConfigurationViewModel(_applicationStateModel, _configurationModel);
 
             _configurationModel.PropertyChanged += (sender, e) => _configurationManager.Save((ConfigurationModel)sender);
 
@@ -72,15 +70,25 @@ namespace DCSB.ViewModels
             set
             {
                 _keyboardInput = new KeyboardInput(value);
-                _keyboardInput.KeyUp += KeyUp;
+                _keyboardInput.KeyUp += _shortcutManager.KeyUp;
                 _keyboardInput.KeyDown += _shortcutManager.KeyDown;
                 _keyboardInput.KeyPress += _shortcutManager.KeyPress;
             }
         }
 
+        public ApplicationStateModel ApplicationStateModel
+        {
+            get { return _applicationStateModel; }
+        }
+
         public ConfigurationModel ConfigurationModel
         {
             get { return _configurationModel; }
+        }
+
+        public PresetConfigurationViewModel PresetConfigurationViewModel
+        {
+            get { return _presetConfigurationViewModel; }
         }
 
         public GridLength CountersWidth
@@ -100,56 +108,6 @@ namespace DCSB.ViewModels
             {
                 _configurationModel.SoundsWidth = value.Value;
                 RaisePropertyChanged("SoundsWidth");
-            }
-        }
-
-        public bool SettingsOpened
-        {
-            get { return _settingsOpened; }
-            set
-            {
-                _settingsOpened = value;
-                RaisePropertyChanged("SettingsOpened");
-            }
-        }
-
-        public bool SoundOpened
-        {
-            get { return _soundOpened; }
-            set
-            {
-                _soundOpened = value;
-                RaisePropertyChanged("SoundOpened");
-            }
-        }
-
-        public bool CounterOpened
-        {
-            get { return _counterOpened; }
-            set
-            {
-                _counterOpened = value;
-                RaisePropertyChanged("CounterOpened");
-            }
-        }
-
-        public bool BindKeysOpened
-        {
-            get { return _bindKeysOpened; }
-            set
-            {
-                _bindKeysOpened = value;
-                RaisePropertyChanged("BindKeysOpened");
-            }
-        }
-
-        public bool AboutOpened
-        {
-            get { return _aboutOpened; }
-            set
-            {
-                _aboutOpened = value;
-                RaisePropertyChanged("AboutOpened");
             }
         }
 
@@ -284,39 +242,6 @@ namespace DCSB.ViewModels
             await _updateManager.ManualUpdateCheck(Version);
         }
 
-        public ICommand AddPresetCommand
-        {
-            get { return new RelayCommand(AddPreset); }
-        }
-        private void AddPreset()
-        {
-            Preset preset = new Preset() { Name = "New Preset" };
-            _configurationModel.PresetCollection.Add(preset);
-            _configurationModel.SelectedPreset = preset;
-        }
-
-        public ICommand RemovePresetCommand
-        {
-            get { return new RelayCommand(RemovePreset); }
-        }
-        private void RemovePreset()
-        {
-            if (_configurationModel.PresetCollection.Count == 1)
-            {
-                AddPreset();
-                _configurationModel.PresetCollection.RemoveAt(0);
-            }
-            else
-            {
-                Preset selected = _configurationModel.SelectedPreset;
-                if (_configurationModel.SelectedPresetIndex == _configurationModel.PresetCollection.Count - 1)
-                {
-                    _configurationModel.SelectedPresetIndex--;
-                }
-                _configurationModel.PresetCollection.Remove(selected);
-            }
-        }
-
         public ICommand PresetSelectedCommand
         {
             get { return new RelayCommand<Preset>(PresetSelected); }
@@ -324,6 +249,10 @@ namespace DCSB.ViewModels
         private void PresetSelected(Preset selectedPreset)
         {
             _configurationModel.SelectedPreset = selectedPreset;
+            foreach (Counter counter in selectedPreset.CounterCollection)
+            {
+                counter.ReadFromFile();
+            }
         }
 
         public ICommand OpenSettingsCommand
@@ -332,7 +261,7 @@ namespace DCSB.ViewModels
         }
         private void OpenSettings()
         {
-            SettingsOpened = true;
+            _applicationStateModel.SettingsOpened = true;
         }
 
         public ICommand OpenCounterCommand
@@ -343,7 +272,8 @@ namespace DCSB.ViewModels
         {
             if (_configurationModel.SelectedPreset.SelectedCounter != null)
             {
-                CounterOpened = true;
+                _applicationStateModel.ModifiedCounter = _configurationModel.SelectedPreset.SelectedCounter;
+                _applicationStateModel.CounterOpened = true;
             }
         }
 
@@ -355,7 +285,8 @@ namespace DCSB.ViewModels
         {
             if (_configurationModel.SelectedPreset.SelectedSound != null)
             {
-                SoundOpened = true;
+                _applicationStateModel.ModifiedSound = _configurationModel.SelectedPreset.SelectedSound;
+                _applicationStateModel.SoundOpened = true;
             }
         }
 
@@ -365,7 +296,7 @@ namespace DCSB.ViewModels
         }
         private void OpenAbout()
         {
-            AboutOpened = true;
+            _applicationStateModel.AboutOpened = true;
         }
 
         public ICommand OpenCounterFileDialogCommand
@@ -407,7 +338,8 @@ namespace DCSB.ViewModels
             Counter counter = new Counter();
             _configurationModel.SelectedPreset.CounterCollection.Add(counter);
             _configurationModel.SelectedPreset.SelectedCounter = counter;
-            CounterOpened = true;
+            _applicationStateModel.ModifiedCounter = counter;
+            _applicationStateModel.CounterOpened = true;
         }
 
         public ICommand RemoveCounterCommand
@@ -560,7 +492,8 @@ namespace DCSB.ViewModels
             Sound sound = new Sound();
             _configurationModel.SelectedPreset.SelectedSound = sound;
             _configurationModel.SelectedPreset.SoundCollection.Add(sound);
-            SoundOpened = true;
+            _applicationStateModel.ModifiedSound = sound;
+            _applicationStateModel.SoundOpened = true;
         }
 
         public ICommand RemoveSoundCommand
@@ -617,8 +550,8 @@ namespace DCSB.ViewModels
         }
         public void BindKeys(IBindable bindable)
         {
-            _modifiedBindable = bindable;
-            BindKeysOpened = true;
+            _applicationStateModel.ModifiedBindable = bindable;
+            _applicationStateModel.BindKeysOpened = true;
         }
 
         public ICommand CancelBindKeysCommand
@@ -627,8 +560,8 @@ namespace DCSB.ViewModels
         }
         public void CancelBindKeys()
         {
-            BindKeysOpened = false;
-            _modifiedBindable = null;
+            _applicationStateModel.BindKeysOpened = false;
+            _applicationStateModel.ModifiedBindable = null;
         }
 
         public ICommand ClearKeysCommand
@@ -637,12 +570,18 @@ namespace DCSB.ViewModels
         }
         private void ClearKeys()
         {
-            BindKeysOpened = false;
-            _modifiedBindable.Keys.Clear();
-            _modifiedBindable = null;
-            // Updating Shortcut Keys for some reason does not trigger saving event as Sounds
-            // so save explicitly
-            _configurationManager.Save(_configurationModel);
+            _applicationStateModel.BindKeysOpened = false;
+            _applicationStateModel.ModifiedBindable.Keys.Clear();
+            _applicationStateModel.ModifiedBindable = null;
+        }
+
+        public ICommand ClosingCommand
+        {
+            get { return new RelayCommand(Closing); }
+        }
+        private void Closing()
+        {
+            _configurationManager.Dispose();
         }
 
         private bool AreCountersEnabled()
@@ -653,22 +592,6 @@ namespace DCSB.ViewModels
         private bool AreSoundsEnabled()
         {
             return _configurationModel.Enable == DisplayOption.Sounds || _configurationModel.Enable == DisplayOption.Both;
-        }
-
-        private void KeyUp(VKey key, List<VKey> pressedKeys)
-        {
-            if (_modifiedBindable != null)
-            {
-                _modifiedBindable.Keys.Clear();
-                foreach (VKey pressedKey in pressedKeys)
-                    _modifiedBindable.Keys.Add(pressedKey);
-
-                BindKeysOpened = false;
-                _modifiedBindable = null;
-                // Updating Shortcut Keys for some reason does not trigger saving event as Sounds
-                // so save explicitly
-                _configurationManager.Save(_configurationModel);
-            }
         }
     }
 }

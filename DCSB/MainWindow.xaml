@@ -15,21 +15,27 @@
         Height="{Binding ConfigurationModel.WindowHeight, Mode=TwoWay}"
         Width="{Binding ConfigurationModel.WindowWidth, Mode=TwoWay}">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <cmd:EventToCommand Command="{Binding ClosingCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <i:Interaction.Behaviors>
         <Interactivity:OpenCloseWindowBehavior WindowType="local:SettingsWindow" 
-                                               Open="{Binding SettingsOpened, Mode=TwoWay}" 
+                                               Open="{Binding ApplicationStateModel.SettingsOpened, Mode=TwoWay}" 
                                                DataContext="{Binding}" />
         <Interactivity:OpenCloseWindowBehavior WindowType="local:SoundWindow" 
-                                               Open="{Binding SoundOpened, Mode=TwoWay}" 
+                                               Open="{Binding ApplicationStateModel.SoundOpened, Mode=TwoWay}" 
                                                DataContext="{Binding}" />
         <Interactivity:OpenCloseWindowBehavior WindowType="local:CounterWindow" 
-                                               Open="{Binding CounterOpened, Mode=TwoWay}" 
+                                               Open="{Binding ApplicationStateModel.CounterOpened, Mode=TwoWay}" 
                                                DataContext="{Binding}" />
         <Interactivity:OpenCloseWindowBehavior WindowType="local:BindKeysWindow" 
-                                               Open="{Binding BindKeysOpened, Mode=TwoWay}" 
+                                               Open="{Binding ApplicationStateModel.BindKeysOpened, Mode=TwoWay}" 
                                                DataContext="{Binding}" />
         <Interactivity:OpenCloseWindowBehavior WindowType="local:AboutWindow" 
-                                               Open="{Binding AboutOpened, Mode=TwoWay}" 
+                                               Open="{Binding ApplicationStateModel.AboutOpened, Mode=TwoWay}" 
                                                DataContext="{Binding}" />
     </i:Interaction.Behaviors>
 
