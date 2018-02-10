@@ -1,14 +1,19 @@
-﻿<UserControl x:Class="DCSB.Views.SettingsWindow.PresetView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
-             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
-             xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
-             xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
-             mc:Ignorable="d" 
-             d:DesignWidth="300">
+﻿<UserControl
+    x:Class="DCSB.Views.SettingsWindow.PresetView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
+    xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+    xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignWidth="300"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{StaticResource MaterialDesignFont}"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
@@ -22,109 +27,150 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="3">
-            <ComboBox DisplayMemberPath="Name"
-                      SelectedItem="{Binding SelectedPreset}"
-                      ItemsSource="{Binding ConfigurationModel.PresetCollection}" />
-            <DockPanel>
-                <Controls:IconButton DockPanel.Dock="Right" 
-                                     Margin="2" 
-                                     ToolTip="Remove Preset"
-                                     Content="{StaticResource RemoveIcon}" 
-                                     Command="{Binding RemovePresetCommand}" />
-                <Controls:IconButton DockPanel.Dock="Right" 
-                                     Margin="2" 
-                                     ToolTip="Add Preset"
-                                     Content="{StaticResource AddIcon}"
-                                     Command="{Binding AddPresetCommand}" />
-                <Controls:IconButton DockPanel.Dock="Right" 
-                                     Margin="2" 
-                                     ToolTip="Copy Preset"
-                                     Content="{StaticResource CopyIcon}"
-                                     Command="{Binding ClonePresetCommand}" />
-                <TextBox Name="NameField"
-                         DockPanel.Dock="Left"
-                         Margin="0,5"
-                         Text="{Binding SelectedPreset.Name}" />
-            </DockPanel>
+            <ComboBox
+                Margin="3"
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding ConfigurationModel.PresetCollection}"
+                SelectedItem="{Binding SelectedPreset}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Column="0"
+                    Margin="2"
+                    Command="{Binding ClonePresetCommand}"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    ToolTip="Copy Preset">
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="ContentCopy" />
+                </Button>
+                <Button
+                    Grid.Column="1"
+                    Margin="2"
+                    Command="{Binding AddPresetCommand}"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    ToolTip="Add Preset">
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="PlaylistPlus" />
+                </Button>
+                <Button
+                    Grid.Column="2"
+                    Margin="2"
+                    Command="{Binding RemovePresetCommand}"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    ToolTip="Remove Preset">
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="PlaylistRemove" />
+                </Button>
+            </Grid>
+
+            <TextBox
+                Name="NameField"
+                Margin="3"
+                DockPanel.Dock="Left"
+                Text="{Binding SelectedPreset.Name, UpdateSourceTrigger=PropertyChanged}" />
 
             <DockPanel>
-                <Button DockPanel.Dock="Right" Width="20" Margin="5,0,0,0" Height="{Binding ActualHeight, ElementName=NameField}" 
-                        Command="{Binding BindKeysCommand}" CommandParameter="{Binding SelectedPreset}">...</Button>
-                <TextBox IsReadOnly="True" Cursor="Arrow" Height="{Binding ActualHeight, ElementName=NameField}"
-                         Text="{Binding SelectedPreset.Keys, Converter={StaticResource vKeysToStringConverter}}"
-                         Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                         Interactivity:Commands.DoubleClickCommandParameter="{Binding SelectedPreset}" />
+                <Button
+                    Margin="3"
+                    Command="{Binding BindKeysCommand}"
+                    CommandParameter="{Binding SelectedPreset}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    ToolTip="Bind Keys">
+                    ...
+                </Button>
+                <TextBox
+                    Height="{Binding ActualHeight, ElementName=NameField}"
+                    Margin="3"
+                    Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
+                    Interactivity:Commands.DoubleClickCommandParameter="{Binding SelectedPreset}"
+                    Cursor="Arrow"
+                    IsReadOnly="True"
+                    Text="{Binding SelectedPreset.Keys, Converter={StaticResource vKeysToStringConverter}}" />
             </DockPanel>
         </StackPanel>
 
-        <ListView Grid.Row="1"
-                  Height="130"
-                  Margin="3"
-                  DisplayMemberPath="Name"
-                  ItemsSource="{Binding SelectedPreset.CounterCollection}"
-                  Interactivity:AttachedProperties.SelectedItems="{Binding SelectedCounters}">
+        <ListBox
+            Grid.Row="1"
+            Height="130"
+            Margin="3"
+            Interactivity:AttachedProperties.SelectedItems="{Binding SelectedCounters}"
+            BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
+            BorderThickness="1"
+            DisplayMemberPath="Name"
+            ItemsSource="{Binding SelectedPreset.CounterCollection}">
 
-            <ListView.Resources>
+            <ListBox.Resources>
                 <ContextMenu x:Key="RowMenu" DataContext="{Binding}">
-                    <MenuItem Header="Edit" 
-                              Command="{Binding DataContext.OpenCounterCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
-                    <MenuItem Header="Remove" 
-                              Command="{Binding DataContext.RemoveCountersCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                    <MenuItem Command="{Binding DataContext.OpenCounterCommand, RelativeSource={RelativeSource AncestorType=ListView}}" Header="Edit" />
+                    <MenuItem Command="{Binding DataContext.RemoveCountersCommand, RelativeSource={RelativeSource AncestorType=ListView}}" Header="Remove" />
                 </ContextMenu>
-            </ListView.Resources>
+            </ListBox.Resources>
 
-            <ListView.ContextMenu>
+            <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Add" 
-                              Command="{Binding AddCounterCommand}"/>
+                    <MenuItem Command="{Binding AddCounterCommand}" Header="Add" />
                 </ContextMenu>
-            </ListView.ContextMenu>
+            </ListBox.ContextMenu>
 
-            <ListView.InputBindings>
+            <ListBox.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding RemoveCountersCommand}" />
-            </ListView.InputBindings>
+            </ListBox.InputBindings>
 
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+            <ListBox.ItemContainerStyle>
+                <Style BasedOn="{StaticResource MaterialDesignListBoxItem}" TargetType="ListBoxItem">
                     <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
                 </Style>
-            </ListView.ItemContainerStyle>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
 
-        </ListView>
+        <ListBox
+            Grid.Row="2"
+            Height="130"
+            Margin="3"
+            Interactivity:AttachedProperties.SelectedItems="{Binding SelectedSounds}"
+            BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
+            BorderThickness="1"
+            DisplayMemberPath="Name"
+            ItemsSource="{Binding SelectedPreset.SoundCollection}">
 
-        <ListView Grid.Row="2"
-                  Height="130"
-                  Margin="3"
-                  DisplayMemberPath="Name"
-                  ItemsSource="{Binding SelectedPreset.SoundCollection}"
-                  Interactivity:AttachedProperties.SelectedItems="{Binding SelectedSounds}">
-
-            <ListView.Resources>
+            <ListBox.Resources>
                 <ContextMenu x:Key="RowMenu" DataContext="{Binding}">
-                    <MenuItem Header="Edit" 
-                              Command="{Binding DataContext.OpenSoundCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
-                    <MenuItem Header="Remove" 
-                              Command="{Binding DataContext.RemoveSoundsCommand, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                    <MenuItem Command="{Binding DataContext.OpenSoundCommand, RelativeSource={RelativeSource AncestorType=ListView}}" Header="Edit" />
+                    <MenuItem Command="{Binding DataContext.RemoveSoundsCommand, RelativeSource={RelativeSource AncestorType=ListView}}" Header="Remove" />
                 </ContextMenu>
-            </ListView.Resources>
+            </ListBox.Resources>
 
-            <ListView.ContextMenu>
+            <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Add" 
-                              Command="{Binding AddSoundCommand}"/>
+                    <MenuItem Command="{Binding AddSoundCommand}" Header="Add" />
                 </ContextMenu>
-            </ListView.ContextMenu>
+            </ListBox.ContextMenu>
 
-            <ListView.InputBindings>
+            <ListBox.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding RemoveSoundsCommand}" />
-            </ListView.InputBindings>
+            </ListBox.InputBindings>
 
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+            <ListBox.ItemContainerStyle>
+                <Style BasedOn="{StaticResource MaterialDesignListBoxItem}" TargetType="ListBoxItem">
                     <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
                 </Style>
-            </ListView.ItemContainerStyle>
-            
-        </ListView>
+            </ListBox.ItemContainerStyle>
+
+        </ListBox>
     </Grid>
 </UserControl>

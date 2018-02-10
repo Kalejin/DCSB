@@ -10,6 +10,7 @@ using DCSB.Input;
 using DCSB.Models;
 using DCSB.Utils;
 using System.Threading.Tasks;
+using DCSB.Colors;
 
 namespace DCSB.ViewModels
 {
@@ -24,6 +25,7 @@ namespace DCSB.ViewModels
         private SoundManager _soundManager;
         private UpdateManager _updateManager;
         private KeyboardInput _keyboardInput;
+        private PaletteManager _paletteManager;
 
         private PresetConfigurationViewModel _presetConfigurationViewModel;
 
@@ -33,6 +35,8 @@ namespace DCSB.ViewModels
 
         public ViewModel()
         {
+            Swatches = new SwatchesProvider().Swatches;
+
             _applicationStateModel = new ApplicationStateModel();
             _configurationManager = new ConfigurationManager();
             _configurationModel = _configurationManager.Load();
@@ -48,6 +52,7 @@ namespace DCSB.ViewModels
             };
             _shortcutManager = new ShortcutManager(_applicationStateModel, _configurationModel, _soundManager);
             _updateManager = new UpdateManager();
+            _paletteManager = new PaletteManager();
 
             _presetConfigurationViewModel = new PresetConfigurationViewModel(_applicationStateModel, _configurationModel);
 
@@ -90,6 +95,8 @@ namespace DCSB.ViewModels
         {
             get { return _presetConfigurationViewModel; }
         }
+
+        public IEnumerable<Swatch> Swatches { get; }
 
         public GridLength CountersWidth
         {
@@ -308,7 +315,7 @@ namespace DCSB.ViewModels
             string result = _openFileManager.OpenCounterFile();
             if (result != null)
             {
-                _configurationModel.SelectedPreset.SelectedCounter.File = result;
+                _applicationStateModel.ModifiedCounter.File = result;
             }
         }
 
@@ -324,7 +331,7 @@ namespace DCSB.ViewModels
                 _configurationModel.SelectedPreset.SelectedSound.Files.Clear();
                 foreach (string file in result)
                 {
-                    _configurationModel.SelectedPreset.SelectedSound.Files.Add(file);
+                    _applicationStateModel.ModifiedSound.Files.Add(file);
                 }
             }
         }
@@ -434,7 +441,7 @@ namespace DCSB.ViewModels
 
         public ICommand MuteCommand
         {
-            get { return new RelayCommand(Mute, AreSoundsEnabled); }
+            get { return new RelayCommand(Mute); }
         }
         private void Mute()
         {
@@ -573,6 +580,16 @@ namespace DCSB.ViewModels
             _applicationStateModel.BindKeysOpened = false;
             _applicationStateModel.ModifiedBindable.Keys.Clear();
             _applicationStateModel.ModifiedBindable = null;
+        }
+
+        public ICommand ToggleBaseCommand
+        {
+            get { return new RelayCommand<bool>(ApplyBase); }
+        }
+
+        private void ApplyBase(bool isDark)
+        {
+            _paletteManager.SetLightDark(isDark);
         }
 
         public ICommand ClosingCommand

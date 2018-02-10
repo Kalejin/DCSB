@@ -1,19 +1,30 @@
-﻿<Window x:Class="DCSB.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
-        xmlns:local="clr-namespace:DCSB"
-        xmlns:Views="clr-namespace:DCSB.Views.MainWindow;assembly=DCSB.Views"
-        xmlns:ViewModels="clr-namespace:DCSB.ViewModels;assembly=DCSB.ViewModels"
-        xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
-        Title="Deathcounter and Soundboard"
-        MinHeight="150"
-        MinWidth="380"
-        Loaded="WindowLoaded"
-        Icon="icon.ico"
-        Height="{Binding ConfigurationModel.WindowHeight, Mode=TwoWay}"
-        Width="{Binding ConfigurationModel.WindowWidth, Mode=TwoWay}">
+﻿<Window
+    x:Class="DCSB.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+    xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+    xmlns:Utils="clr-namespace:DCSB.Utils;assembly=DCSB.Utils"
+    xmlns:ViewModels="clr-namespace:DCSB.ViewModels;assembly=DCSB.ViewModels"
+    xmlns:Views="clr-namespace:DCSB.Views.MainWindow;assembly=DCSB.Views"
+    xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:local="clr-namespace:DCSB"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    Width="{Binding ConfigurationModel.WindowWidth, Mode=TwoWay}"
+    Height="{Binding ConfigurationModel.WindowHeight, Mode=TwoWay}"
+    MinWidth="380"
+    MinHeight="150"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{StaticResource MaterialDesignFont}"
+    Loaded="WindowLoaded"
+    SizeChanged="WindowSizeChanged"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    WindowStyle="None">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
@@ -22,27 +33,195 @@
     </i:Interaction.Triggers>
 
     <i:Interaction.Behaviors>
-        <Interactivity:OpenCloseWindowBehavior WindowType="local:SettingsWindow" 
-                                               Open="{Binding ApplicationStateModel.SettingsOpened, Mode=TwoWay}" 
-                                               DataContext="{Binding}" />
-        <Interactivity:OpenCloseWindowBehavior WindowType="local:SoundWindow" 
-                                               Open="{Binding ApplicationStateModel.SoundOpened, Mode=TwoWay}" 
-                                               DataContext="{Binding}" />
-        <Interactivity:OpenCloseWindowBehavior WindowType="local:CounterWindow" 
-                                               Open="{Binding ApplicationStateModel.CounterOpened, Mode=TwoWay}" 
-                                               DataContext="{Binding}" />
-        <Interactivity:OpenCloseWindowBehavior WindowType="local:BindKeysWindow" 
-                                               Open="{Binding ApplicationStateModel.BindKeysOpened, Mode=TwoWay}" 
-                                               DataContext="{Binding}" />
-        <Interactivity:OpenCloseWindowBehavior WindowType="local:AboutWindow" 
-                                               Open="{Binding ApplicationStateModel.AboutOpened, Mode=TwoWay}" 
-                                               DataContext="{Binding}" />
+        <Interactivity:OpenCloseWindowBehavior
+            DataContext="{Binding}"
+            Open="{Binding ApplicationStateModel.SettingsOpened, Mode=TwoWay}"
+            WindowType="local:SettingsWindow" />
+        <Interactivity:OpenCloseWindowBehavior
+            DataContext="{Binding}"
+            Open="{Binding ApplicationStateModel.SoundOpened, Mode=TwoWay}"
+            WindowType="local:SoundWindow" />
+        <Interactivity:OpenCloseWindowBehavior
+            DataContext="{Binding}"
+            Open="{Binding ApplicationStateModel.CounterOpened, Mode=TwoWay}"
+            WindowType="local:CounterWindow" />
+        <Interactivity:OpenCloseWindowBehavior
+            DataContext="{Binding}"
+            Open="{Binding ApplicationStateModel.BindKeysOpened, Mode=TwoWay}"
+            WindowType="local:BindKeysWindow" />
     </i:Interaction.Behaviors>
 
     <Window.DataContext>
-        <ViewModels:ViewModel/>
+        <ViewModels:ViewModel />
     </Window.DataContext>
 
-    <Views:SplitView />
+    <Window.Resources>
+        <Converters:DisplayOptionToEnabled x:Key="DisplayOptionToEnabled" />
+        <Converters:AreEqualConverter x:Key="AreEqualConverter" />
+        <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
 
+        <DataTemplate x:Key="CounterListView">
+            <Views:CounterListView DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="SoundListView">
+            <Views:SoundListView DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}" />
+        </DataTemplate>
+    </Window.Resources>
+
+
+    <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+
+        <materialDesign:DrawerHost.LeftDrawerContent>
+            <DockPanel>
+                <ToggleButton
+                    Margin="16"
+                    HorizontalAlignment="Right"
+                    DockPanel.Dock="Top"
+                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"
+                    Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+
+                <TextBlock
+                    Margin="30, 10, 40, 10"
+                    DockPanel.Dock="Bottom"
+                    Text="{Binding Version, StringFormat='DCSB v{0}'}" />
+
+                <ListBox PreviewMouseLeftButtonUp="ListBox_PreviewMouseLeftButtonUp">
+                    <ListBox.Resources>
+                        <Style BasedOn="{StaticResource MaterialDesignListBoxItem}" TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="30,10,50,10" />
+                        </Style>
+                    </ListBox.Resources>
+
+                    <ListBoxItem PreviewMouseDown="HotkeysSetting_Click">Hotkeys</ListBoxItem>
+                    <ListBoxItem PreviewMouseDown="SoundSetting_Click">Sound</ListBoxItem>
+                    <ListBoxItem PreviewMouseDown="PresetsSetting_Click">Presets</ListBoxItem>
+                    <ListBoxItem PreviewMouseDown="VisualSetting_Click">Visual</ListBoxItem>
+                    <ListBoxItem PreviewMouseDown="OtherSetting_Click">Other</ListBoxItem>
+                    <Separator />
+                    <ListBoxItem PreviewMouseDown="Update_Click">Update</ListBoxItem>
+                </ListBox>
+            </DockPanel>
+        </materialDesign:DrawerHost.LeftDrawerContent>
+
+
+        <DockPanel>
+            <materialDesign:ColorZone
+                Padding="5"
+                DockPanel.Dock="Top"
+                Mode="PrimaryMid"
+                MouseDown="DragWindow">
+                <DockPanel>
+                    <ToggleButton
+                        x:Name="MenuToggleButton"
+                        Margin="4,0"
+                        Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+
+                    <Button
+                        Click="CloseClick"
+                        DockPanel.Dock="Right"
+                        Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                        Style="{StaticResource MaterialDesignFlatButton}">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="Close" />
+                    </Button>
+
+                    <Button
+                        Click="MaximizeClick"
+                        DockPanel.Dock="Right"
+                        Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                        Style="{StaticResource MaterialDesignFlatButton}">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="Fullscreen" />
+                    </Button>
+
+                    <Button
+                        Click="MinimizeClick"
+                        DockPanel.Dock="Right"
+                        Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                        Style="{StaticResource MaterialDesignFlatButton}">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="WindowMinimize" />
+                    </Button>
+
+                    <DockPanel
+                        Margin="20,0"
+                        DockPanel.Dock="Right"
+                        LastChildFill="False">
+
+                        <Slider
+                            Width="100"
+                            VerticalAlignment="Center"
+                            AutoToolTipPlacement="BottomRight"
+                            DockPanel.Dock="Right"
+                            Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                            IsMoveToPointEnabled="True"
+                            Maximum="100"
+                            Value="{Binding CurrentVolume}" />
+
+                        <Button
+                            Command="{Binding MuteCommand}"
+                            DockPanel.Dock="Right"
+                            Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Mute">
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                Kind="VolumeOff" />
+                        </Button>
+                    </DockPanel>
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="18">
+                        Deadhcounter and Soundboard
+                    </TextBlock>
+                </DockPanel>
+            </materialDesign:ColorZone>
+
+            <materialDesign:DialogHost CloseOnClickAway="True" Identifier="RootDialog">
+                <ContentControl>
+                    <ContentControl.Style>
+                        <Style TargetType="{x:Type ContentControl}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ConfigurationModel.Enable}" Value="{x:Static Utils:DisplayOption.Counters}">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource CounterListView}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConfigurationModel.Enable}" Value="{x:Static Utils:DisplayOption.Sounds}">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource SoundListView}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+
+                    <Grid x:Name="splitterGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding CountersWidth, Mode=TwoWay}" MinWidth="255" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="{Binding SoundsWidth, Mode=TwoWay}" MinWidth="317" />
+                        </Grid.ColumnDefinitions>
+
+                        <ContentControl Grid.Column="0" ContentTemplate="{StaticResource CounterListView}" />
+
+                        <GridSplitter
+                            Grid.Column="1"
+                            Width="5"
+                            HorizontalAlignment="Stretch" />
+
+                        <ContentControl Grid.Column="2" ContentTemplate="{StaticResource SoundListView}" />
+
+                    </Grid>
+                </ContentControl>
+
+            </materialDesign:DialogHost>
+        </DockPanel>
+    </materialDesign:DrawerHost>
 </Window>

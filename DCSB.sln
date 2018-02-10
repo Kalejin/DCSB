@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{8CC10E
 		AssemblyVersionInfo.cs = AssemblyVersionInfo.cs
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DCSB.Colors", "DCSB.Colors\DCSB.Colors.csproj", "{81163049-23A8-4E66-9D5B-521654545A91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -193,6 +195,18 @@ Global
 		{F353EF29-363C-4694-B5C1-F90A2D48B126}.Release|x64.Build.0 = Release|Any CPU
 		{F353EF29-363C-4694-B5C1-F90A2D48B126}.Release|x86.ActiveCfg = Release|Any CPU
 		{F353EF29-363C-4694-B5C1-F90A2D48B126}.Release|x86.Build.0 = Release|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Debug|x64.Build.0 = Debug|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Debug|x86.Build.0 = Debug|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Release|x64.ActiveCfg = Release|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Release|x64.Build.0 = Release|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Release|x86.ActiveCfg = Release|Any CPU
+		{81163049-23A8-4E66-9D5B-521654545A91}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

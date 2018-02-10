@@ -1,129 +1,104 @@
-﻿<UserControl x:Class="DCSB.Views.SettingsWindow.SoundView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
-             xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
-             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
-             mc:Ignorable="d" 
-             d:DesignHeight="300"
-             d:DesignWidth="400">
+﻿<UserControl
+    x:Class="DCSB.Views.SettingsWindow.SoundView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
+    xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="400"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{StaticResource MaterialDesignFont}"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <Converters:VolumeIconConverter x:Key="volumeIconConverter" />
-        
-        <Style x:Key="ListItem" TargetType="{x:Type ListBoxItem}" >
+
+        <Style x:Key="ListItem" TargetType="{x:Type ListBoxItem}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" >
-                            <ContentPresenter Content = "{TemplateBinding ContentControl.Content}"
-                                              ContentTemplate = "{TemplateBinding ContentControl.ContentTemplate}" />
+                        <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" />
                         </DockPanel>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
     </UserControl.Resources>
-    
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel>
-            <GroupBox Header="Overlap">
-                <CheckBox Margin="5" IsChecked="{Binding Overlap}">Overlap sounds</CheckBox>
-            </GroupBox>
-            
-            <GroupBox Header="Output Devices">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    
-                    <Label Grid.Column="0"
-                           Grid.Row="0">First:</Label>
-                    <ComboBox Grid.Column="1"
-                              Grid.Row="0"
-                              Margin="3"
-                              DisplayMemberPath="Name"
-                              ItemsSource="{Binding AvailableOutputDevices}"
-                              SelectedIndex="{Binding PrimaryOutputDeviceIndex}" />
-                    <DockPanel Grid.Column="1"
-                               Grid.Row="1"
-                               Margin="0,0,0,5">
-                        <Controls:IconButton DockPanel.Dock="Left"
-                                             Margin="3,0,0,0"
-                                             Content="{Binding ElementName=PrimaryVolumeSlider, Path=Value, Converter={StaticResource volumeIconConverter}, ConverterParameter={StaticResource VolumeIcons}}" 
-                                             Command="{Binding MutePrimaryCommand}"
-                                             Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                             Height="{Binding ActualHeight, ElementName=PrimaryVolumeSlider}">
-                            <Controls:IconButton.Style>
-                                <Style TargetType="{x:Type Controls:IconButton}">
-                                    <Style.Setters>
-                                        <Setter Property="ToolTip" Value="Mute" />
-                                    </Style.Setters>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Value, ElementName=PrimaryVolumeSlider}" Value="0">
-                                            <Setter Property="ToolTip" Value="Unmute" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Controls:IconButton.Style>
-                        </Controls:IconButton>
-                        <Slider x:Name="PrimaryVolumeSlider"
-                                Margin="3"
-                                DockPanel.Dock="Right"
-                                Maximum="100"
-                                IsMoveToPointEnabled="True"
-                                AutoToolTipPlacement="BottomRight"
-                                Value="{Binding PrimaryDeviceVolume}" />
-                    </DockPanel>
 
-                    <Label Grid.Column="0" 
-                           Grid.Row="2">Second:</Label>
-                    <ComboBox Grid.Column="1" 
-                              Grid.Row="2"
-                              Margin="3"
-                              DisplayMemberPath="Name"
-                              ItemsSource="{Binding SecondaryOutputDevices}" 
-                              SelectedIndex="{Binding SecondaryOutputDeviceIndex}" />
-                    <DockPanel Grid.Column="1"
-                               Grid.Row="3">
-                        <Controls:IconButton DockPanel.Dock="Left"
-                                             Margin="3,0,0,0"
-                                             Content="{Binding ElementName=SecondaryVolumeSlider, Path=Value, Converter={StaticResource volumeIconConverter}, ConverterParameter={StaticResource VolumeIcons}}" 
-                                             Command="{Binding MuteSecondaryCommand}"
-                                             Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                             Height="{Binding ActualHeight, ElementName=SecondaryVolumeSlider}">
-                            <Controls:IconButton.Style>
-                                <Style TargetType="{x:Type Controls:IconButton}">
-                                    <Style.Setters>
-                                        <Setter Property="ToolTip" Value="Mute" />
-                                    </Style.Setters>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Value, ElementName=SecondaryVolumeSlider}" Value="0">
-                                            <Setter Property="ToolTip" Value="Unmute" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Controls:IconButton.Style>
-                        </Controls:IconButton>
-                        <Slider x:Name="SecondaryVolumeSlider"
-                                Margin="3"
-                                DockPanel.Dock="Right"
-                                Maximum="100"
-                                IsMoveToPointEnabled="True"
-                                AutoToolTipPlacement="BottomRight"
-                                Value="{Binding SecondaryDeviceVolume}" />
-                    </DockPanel>
-                </Grid>
-            </GroupBox>
-        </StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <GroupBox Header="Sound">
+            <StackPanel>
+                <StackPanel Margin="3,10" Orientation="Horizontal">
+                    <ToggleButton
+                        Margin="0,0,5,0"
+                        IsChecked="{Binding Overlap}"
+                        Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+                    <TextBlock VerticalAlignment="Center">Overlap sounds</TextBlock>
+                </StackPanel>
+
+                <Separator Margin="3" />
+
+                <TextBlock Margin="3,10">Output devices</TextBlock>
+
+                <ComboBox
+                    Margin="3"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding AvailableOutputDevices}"
+                    SelectedIndex="{Binding PrimaryOutputDeviceIndex}" />
+                <DockPanel Margin="0,5,0,10">
+                    <Button
+                        Command="{Binding MutePrimaryCommand}"
+                        DockPanel.Dock="Left"
+                        Foreground="{DynamicResource PrimaryHueMidBrush}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        ToolTip="Mute">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="VolumeOff" />
+                    </Button>
+                    <Slider
+                        Margin="3"
+                        VerticalAlignment="Center"
+                        AutoToolTipPlacement="BottomRight"
+                        DockPanel.Dock="Right"
+                        IsMoveToPointEnabled="True"
+                        Maximum="100"
+                        Value="{Binding PrimaryDeviceVolume}" />
+                </DockPanel>
+
+                <ComboBox
+                    Margin="3"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding SecondaryOutputDevices}"
+                    SelectedIndex="{Binding SecondaryOutputDeviceIndex}" />
+                <DockPanel Margin="0,5,0,0">
+                    <Button
+                        Command="{Binding MuteSecondaryCommand}"
+                        DockPanel.Dock="Left"
+                        Foreground="{DynamicResource PrimaryHueMidBrush}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        ToolTip="Mute">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="VolumeOff" />
+                    </Button>
+                    <Slider
+                        Margin="3"
+                        VerticalAlignment="Center"
+                        AutoToolTipPlacement="BottomRight"
+                        DockPanel.Dock="Right"
+                        IsMoveToPointEnabled="True"
+                        Maximum="100"
+                        Value="{Binding SecondaryDeviceVolume}" />
+                </DockPanel>
+            </StackPanel>
+        </GroupBox>
     </ScrollViewer>
 </UserControl>

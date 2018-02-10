@@ -71,6 +71,10 @@
       <Project>{136edddc-55aa-4cba-aaff-94cea45a1bff}</Project>
       <Name>DCSB.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DCSB.Colors\DCSB.Colors.csproj">
+      <Project>{81163049-23A8-4E66-9D5B-521654545A91}</Project>
+      <Name>DCSB.Colors</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DCSB.Input\DCSB.Input.csproj">
       <Project>{05392a89-a4fd-489e-ba4a-01e8d68d8088}</Project>
       <Name>DCSB.Input</Name>

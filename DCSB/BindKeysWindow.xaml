@@ -10,15 +10,16 @@
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-        BorderThickness="1">
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{StaticResource MaterialDesignFont}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}">
 
     <StackPanel>
         <Label>Press keys you want to bind.</Label>
         <StackPanel Orientation="Horizontal"
                     FlowDirection="RightToLeft">
-            <Button Margin="5" Width="50" Command="{Binding CancelBindKeysCommand}">Cancel</Button>
-            <Button Margin="5" Width="50" Command="{Binding ClearKeysCommand}">Clear</Button>
+            <Button Margin="5" Command="{Binding CancelBindKeysCommand}">Cancel</Button>
+            <Button Margin="5" Command="{Binding ClearKeysCommand}">Clear</Button>
         </StackPanel>
     </StackPanel>
 </Window>

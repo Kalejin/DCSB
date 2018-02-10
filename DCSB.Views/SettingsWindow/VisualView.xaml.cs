@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DCSB
+namespace DCSB.Views.SettingsWindow
 {
     /// <summary>
-    /// Interaction logic for AboutWindow.xaml
+    /// Interaction logic for VisualView.xaml
     /// </summary>
-    public partial class AboutWindow : Window
+    public partial class VisualView : UserControl
     {
-        public AboutWindow()
+        public VisualView()
         {
             InitializeComponent();
         }

@@ -11,7 +11,10 @@
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        WindowStyle="ToolWindow">
+        WindowStyle="ToolWindow"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{StaticResource MaterialDesignFont}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}">
 
     <Views:CounterView />
 </Window>

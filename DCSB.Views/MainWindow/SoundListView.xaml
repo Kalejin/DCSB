@@ -3,15 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
              xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
              xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
              mc:Ignorable="d" 
              MinHeight="70" 
-             MinWidth="180"
+             MinWidth="317"
              Padding="3,0,3,0"
              d:DesignHeight="300" 
-             d:DesignWidth="300">
+             d:DesignWidth="350"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{StaticResource MaterialDesignFont}"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}">
 
     <UserControl.Resources>
         <Converters:VolumeIconConverter x:Key="volumeIconConverter" />
@@ -20,81 +24,43 @@
     </UserControl.Resources>
 
     <DockPanel>
-        <DockPanel DockPanel.Dock="Top">
-            <Label DockPanel.Dock="Left">
-                <ContentControl.Style>
-                    <Style TargetType="{x:Type ContentControl}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="true">
-                                <Setter Property="Content" Value="Sounds" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="false">
-                                <Setter Property="Content" Value="Sounds (Disabled)" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ContentControl.Style>
-            </Label>
-            
-            <Slider x:Name="VolumeSlider"
-                    VerticalAlignment="Center"
-                    DockPanel.Dock="Right"
-                    Width="100"
-                    Maximum="100"
-                    IsMoveToPointEnabled="True"
-                    AutoToolTipPlacement="BottomRight"
-                    Value="{Binding CurrentVolume}" />
-
-            <Controls:IconButton DockPanel.Dock="Right" 
-                                 Margin="3"
-                                 Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource volumeIconConverter}, ConverterParameter={StaticResource VolumeIcons}}" 
-                                 Command="{Binding MuteCommand}"
-                                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                 Height="{Binding ActualHeight, ElementName=VolumeSlider}">
-                <Controls:IconButton.Style>
-                    <Style TargetType="{x:Type Controls:IconButton}">
-                        <Style.Setters>
-                            <Setter Property="ToolTip" Value="Mute" />
-                        </Style.Setters>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Value, ElementName=VolumeSlider}" Value="0">
-                                <Setter Property="ToolTip" Value="Unmute" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Controls:IconButton.Style>
-            </Controls:IconButton>
-
-            <StackPanel />
-        </DockPanel>
-
-        <DockPanel DockPanel.Dock="Bottom">
-            <Controls:IconButton DockPanel.Dock="Left" 
-                                 Content="{StaticResource AddIcon}"
-                                 Margin="2"
-                                 Command="{Binding AddSoundCommand}"
-                                 ToolTip="Add Sound" />
-            <Controls:IconButton DockPanel.Dock="Left" 
-                                 Content="{StaticResource RemoveIcon}" 
-                                 Margin="2"
-                                 Command="{Binding RemoveSoundCommand}"
-                                 ToolTip="Remove Sound" />
-            <Controls:IconButton DockPanel.Dock="Right" 
-                                 Content="{StaticResource PlayIcon}" 
-                                 Margin="2"
-                                 Command="{Binding ContinueCommand}"
-                                 ToolTip="Play" />
-            <Controls:IconButton DockPanel.Dock="Right" 
-                                 Content="{StaticResource PauseIcon}" 
-                                 Margin="2"
-                                 Command="{Binding PauseCommand}"
-                                 ToolTip="Pause" />
-            <Controls:IconButton DockPanel.Dock="Right" 
-                                 Content="{StaticResource StopIcon}" 
-                                 Margin="2"
-                                 Command="{Binding StopCommand}"
-                                 ToolTip="Stop" />
-            <StackPanel />
+        <DockPanel DockPanel.Dock="Bottom"
+                   LastChildFill="False">
+            <Button DockPanel.Dock="Left" 
+                    Margin="3,6" 
+                    ToolTip="Add Sound"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding AddSoundCommand}">
+                <materialDesign:PackIcon Kind="PlaylistPlus" Height="24" Width="24" />
+            </Button>
+            <Button DockPanel.Dock="Left" 
+                    Margin="3,6" 
+                    ToolTip="Remove Sound"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding RemoveSoundCommand}">
+                <materialDesign:PackIcon Kind="PlaylistRemove" Height="24" Width="24" />
+            </Button>
+            <Button DockPanel.Dock="Right" 
+                    Margin="3,6" 
+                    ToolTip="Continue"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding ContinueCommand}">
+                <materialDesign:PackIcon Kind="Play" Height="24" Width="24" />
+            </Button>
+            <Button DockPanel.Dock="Right" 
+                    Margin="3,6" 
+                    ToolTip="Pause"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding PauseCommand}">
+                <materialDesign:PackIcon Kind="Pause" Height="24" Width="24" />
+            </Button>
+            <Button DockPanel.Dock="Right" 
+                    Margin="3,6" 
+                    ToolTip="Stop"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding StopCommand}">
+                <materialDesign:PackIcon Kind="Stop" Height="24" Width="24" />
+            </Button>
         </DockPanel>
 
         <DataGrid ItemsSource="{Binding ConfigurationModel.SelectedPreset.SoundCollection}" 
@@ -129,7 +95,7 @@
             </DataGrid.InputBindings>
 
             <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" >
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource MaterialDesignDataGridRow}">
                     <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
                 </Style>
             </DataGrid.RowStyle>

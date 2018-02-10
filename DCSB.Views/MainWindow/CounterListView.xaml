@@ -3,58 +3,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
              xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
              xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
              mc:Ignorable="d" 
              MinHeight="70" 
-             MinWidth="180" 
+             MinWidth="255" 
              Padding="3,0,3,0"
              d:DesignHeight="300" 
-             d:DesignWidth="300">
+             d:DesignWidth="300"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{StaticResource MaterialDesignFont}"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}">
 
     <UserControl.Resources>
         <Converters:StringToVisibilityConverter x:Key="stringToVisibilityConverter" />
     </UserControl.Resources>
 
     <DockPanel>
-        <Label DockPanel.Dock="Top">
-            <ContentControl.Style>
-                <Style TargetType="{x:Type ContentControl}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="true">
-                            <Setter Property="Content" Value="Counters" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="false">
-                            <Setter Property="Content" Value="Counters (Disabled)" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ContentControl.Style>
-        </Label>
-
         <DockPanel DockPanel.Dock="Bottom"
                    LastChildFill="False">
-            <Controls:IconButton DockPanel.Dock="Left" 
-                                 Content="{StaticResource AddIcon}" 
-                                 Margin="2" 
-                                 Command="{Binding AddCounterCommand}"
-                                 ToolTip="Add Counter" />
-            <Controls:IconButton DockPanel.Dock="Left" 
-                                 Content="{StaticResource RemoveIcon}" 
-                                 Margin="2" 
-                                 Command="{Binding RemoveCounterCommand}"
-                                 ToolTip="Remove Counter" />
-            <Controls:IconButton DockPanel.Dock="Right" 
-                                 Content="{StaticResource IncrementIcon}" 
-                                 Margin="2" 
-                                 Command="{Binding IncrementCommand}"
-                                 ToolTip="Increment" />
-            <Controls:IconButton DockPanel.Dock="Right" 
-                                 Content="{StaticResource DecrementIcon}" 
-                                 Margin="2" 
-                                 Command="{Binding DecrementCommand}"
-                                 ToolTip="Decrement" />
+            <Button DockPanel.Dock="Left" 
+                    Margin="3,6" 
+                    ToolTip="Add Counter"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding AddCounterCommand}">
+                <materialDesign:PackIcon Kind="PlaylistPlus" Height="24" Width="24" />
+            </Button>
+            <Button DockPanel.Dock="Left" 
+                    Margin="3,6" 
+                    ToolTip="Remove Counter"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding RemoveCounterCommand}">
+                <materialDesign:PackIcon Kind="PlaylistRemove" Height="24" Width="24" />
+            </Button>
+            <Button DockPanel.Dock="Right" 
+                    Margin="3,6" 
+                    ToolTip="Increment Counter"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding IncrementCommand}">
+                <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
+            </Button>
+            <Button DockPanel.Dock="Right" 
+                    Margin="3,6" 
+                    ToolTip="Decrement Counter"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Command="{Binding DecrementCommand}">
+                <materialDesign:PackIcon Kind="Minus" Height="24" Width="24" />
+            </Button>
         </DockPanel>
 
         <DataGrid ItemsSource="{Binding ConfigurationModel.SelectedPreset.CounterCollection}" 
@@ -88,7 +85,7 @@
             </DataGrid.InputBindings>
 
             <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" >
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource MaterialDesignDataGridRow}">
                     <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
                 </Style>
             </DataGrid.RowStyle>

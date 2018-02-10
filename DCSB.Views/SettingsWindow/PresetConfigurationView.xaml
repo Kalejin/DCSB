@@ -1,19 +1,24 @@
-﻿<UserControl x:Class="DCSB.Views.SettingsWindow.PresetConfigurationView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
-             xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
-             xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
-             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
-             mc:Ignorable="d" 
-             d:DesignWidth="300">
+﻿<UserControl
+    x:Class="DCSB.Views.SettingsWindow.PresetConfigurationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:DCSB.Controls;assembly=DCSB.Controls"
+    xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+    xmlns:Interactivity="clr-namespace:DCSB.Interactivity;assembly=DCSB.Interactivity"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DCSB.Views.SettingsWindow"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="500"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{StaticResource MaterialDesignFont}"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
     </UserControl.Resources>
-    
+
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
             <GroupBox Header="Presets">
@@ -24,50 +29,60 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <local:PresetView x:Name="Left"
-                                      Grid.Column="0"
-                                      DataContext="{Binding LeftPresetViewModel}" />
+                    <local:PresetView
+                        x:Name="Left"
+                        Grid.Column="0"
+                        DataContext="{Binding PresetConfigurationViewModel.LeftPresetViewModel}" />
 
                     <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="80"/>
+                            <RowDefinition Height="140" />
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Row="1"
-                                    Orientation="Vertical"
-                                    VerticalAlignment="Center">
-                            <Controls:IconButton Height="20"
-                                             Width="20"
-                                             ToolTip="Copy selected Counters from left to right"
-                                             Content="{StaticResource RightArrowIcon}" 
-                                             Command="{Binding CopyCountersRightCommand}" />
-                            <Controls:IconButton Height="20"
-                                             Width="20"
-                                             ToolTip="Copy selected Counters from right to left"
-                                             Content="{StaticResource LeftArrowIcon}" 
-                                             Command="{Binding CopyCountersLeftCommand}" />
+                        <StackPanel
+                            Grid.Row="1"
+                            VerticalAlignment="Center"
+                            Orientation="Vertical">
+                            <Button
+                                Margin="2"
+                                Command="{Binding PresetConfigurationViewModel.CopyCountersRightCommand}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                                ToolTip="Copy Counters from left to right">
+                                <materialDesign:PackIcon Kind="ArrowRight" />
+                            </Button>
+                            <Button
+                                Margin="2"
+                                Command="{Binding PresetConfigurationViewModel.CopyCountersLeftCommand}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                                ToolTip="Copy Counters from right to left">
+                                <materialDesign:PackIcon Kind="ArrowLeft" />
+                            </Button>
                         </StackPanel>
 
-                        <StackPanel Grid.Row="2"
-                                    Orientation="Vertical"
-                                    VerticalAlignment="Center">
-                            <Controls:IconButton Height="20"
-                                             Width="20"
-                                             ToolTip="Copy selected Sounds from left to right"
-                                             Content="{StaticResource RightArrowIcon}" 
-                                             Command="{Binding CopySoundsRightCommand}" />
-                            <Controls:IconButton Height="20"
-                                             Width="20"
-                                             ToolTip="Copy selected Sounds from right to left"
-                                             Content="{StaticResource LeftArrowIcon}" 
-                                             Command="{Binding CopySoundsLeftCommand}" />
+                        <StackPanel
+                            Grid.Row="2"
+                            VerticalAlignment="Center"
+                            Orientation="Vertical">
+                            <Button
+                                Margin="2"
+                                Command="{Binding PresetConfigurationViewModel.CopySoundsRightCommand}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                                ToolTip="Copy Sounds from left to right">
+                                <materialDesign:PackIcon Kind="ArrowRight" />
+                            </Button>
+                            <Button
+                                Margin="2"
+                                Command="{Binding PresetConfigurationViewModel.CopySoundsLeftCommand}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                                ToolTip="Copy Sounds from right to left">
+                                <materialDesign:PackIcon Kind="ArrowLeft" />
+                            </Button>
                         </StackPanel>
                     </Grid>
 
-                    <local:PresetView Grid.Column="2"
-                                      DataContext="{Binding RightPresetViewModel}" />
+                    <local:PresetView Grid.Column="2" DataContext="{Binding PresetConfigurationViewModel.RightPresetViewModel}" />
                 </Grid>
             </GroupBox>
         </StackPanel>

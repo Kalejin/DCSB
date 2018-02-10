@@ -8,8 +8,11 @@
         SizeToContent="Height"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
+        WindowStyle="ToolWindow"
         ResizeMode="NoResize"
-        WindowStyle="ToolWindow">
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{StaticResource MaterialDesignFont}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}">
 
     <TabControl>
         <TabItem Header="Keyboard">

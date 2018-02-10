@@ -1,15 +1,17 @@
-﻿<UserControl x:Class="DCSB.Views.MainWindow.SplitView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DCSB.Views.MainWindow"
-             xmlns:Utils="clr-namespace:DCSB.Utils;assembly=DCSB.Utils"
-             xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
-             mc:Ignorable="d" 
-             d:DesignHeight="300"
-             d:DesignWidth="400"
-             SizeChanged="UserControlSizeChanged">
+﻿<UserControl
+    x:Class="DCSB.Views.MainWindow.SplitView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Converters="clr-namespace:DCSB.Converters;assembly=DCSB.Converters"
+    xmlns:Utils="clr-namespace:DCSB.Utils;assembly=DCSB.Utils"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DCSB.Views.MainWindow"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    SizeChanged="UserControlSizeChanged"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <Converters:DisplayOptionToEnabled x:Key="DisplayOptionToEnabled" />
@@ -25,75 +27,105 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <Menu.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <DockPanel HorizontalAlignment="Stretch"/>
-                </ItemsPanelTemplate>
-            </Menu.ItemsPanel>
-            
-            <MenuItem Header="Settings" 
-                      Command="{Binding OpenSettingsCommand}" />
-            
-            <MenuItem Header="{Binding ConfigurationModel.SelectedPreset.Name}" 
-                      HeaderStringFormat="Preset: {0}"
-                      DisplayMemberPath="Name"
-                      ItemsSource="{Binding ConfigurationModel.PresetCollection}">
-                <MenuItem.ItemContainerStyle>
-                    <Style TargetType="{x:Type MenuItem}">
-                        <Setter Property="Command" Value="{Binding DataContext.PresetSelectedCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
-                        <Setter Property="CommandParameter" Value="{Binding}" />
-                        <Setter Property="InputGestureText" Value="{Binding Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                        <Setter Property="IsChecked">
-                            <Setter.Value>
-                                <MultiBinding Converter="{StaticResource AreEqualConverter}">
-                                    <Binding Path="DataContext.ConfigurationModel.SelectedPreset" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
-                                    <Binding Path="."/>
-                                </MultiBinding>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </MenuItem.ItemContainerStyle>
-            </MenuItem>
+    <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
 
-            <MenuItem Header="Help"
-                      HorizontalAlignment="Right">
-                <MenuItem Header="About" 
-                          Command="{Binding OpenAboutCommand}" />
-                <MenuItem Header="Check for updates" 
-                          Command="{Binding CheckForUpdatesCommand}" />
-            </MenuItem>
-        </Menu>
+        <materialDesign:DrawerHost.LeftDrawerContent>
+            <DockPanel>
+                <ToggleButton
+                    Margin="16"
+                    HorizontalAlignment="Right"
+                    DockPanel.Dock="Top"
+                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"
+                    Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+                <ListBox>
+                    <Button Click="MenuPopupButton_OnClick">Keyboard</Button>
+                    <ListBoxItem>Sound</ListBoxItem>
+                    <ListBoxItem>Presets</ListBoxItem>
+                    <ListBoxItem>Visual</ListBoxItem>
+                    <ListBoxItem>Other</ListBoxItem>
+                    <Separator />
+                    <ListBoxItem>Update</ListBoxItem>
+                    <ListBoxItem>About</ListBoxItem>
+                </ListBox>
+            </DockPanel>
+        </materialDesign:DrawerHost.LeftDrawerContent>
 
-        <ContentControl>
-            <ContentControl.Style>
-                <Style TargetType="{x:Type ContentControl}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ConfigurationModel.Enable}" Value="{x:Static Utils:DisplayOption.Counters}">
-                            <Setter Property="ContentTemplate" Value="{StaticResource CounterListView}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ConfigurationModel.Enable}" Value="{x:Static Utils:DisplayOption.Sounds}">
-                            <Setter Property="ContentTemplate" Value="{StaticResource SoundListView}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ContentControl.Style>
+        <materialDesign:DialogHost CloseOnClickAway="True" Identifier="RootDialog">
+            <DockPanel>
+                <materialDesign:ColorZone
+                    Padding="10"
+                    DockPanel.Dock="Top"
+                    Mode="PrimaryMid">
+                    <DockPanel LastChildFill="False">
+                        <ToggleButton x:Name="MenuToggleButton" Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
 
-            <Grid x:Name="splitterGrid">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding CountersWidth, Mode=TwoWay}" MinWidth="180" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="{Binding SoundsWidth, Mode=TwoWay}" MinWidth="180" />
-                </Grid.ColumnDefinitions>
+                        <materialDesign:PopupBox
+                            DockPanel.Dock="Right"
+                            PlacementMode="BottomAndAlignRightEdges"
+                            StaysOpen="False">
+                            <StackPanel>
+                                <Button Command="{Binding OpenAboutCommand}" Content="About" />
+                                <Button Command="{Binding CheckForUpdatesCommand}" Content="Check for Updates" />
+                            </StackPanel>
+                        </materialDesign:PopupBox>
 
-                <ContentControl ContentTemplate="{StaticResource CounterListView}" Grid.Column="0" />
+                        <DockPanel DockPanel.Dock="Right" LastChildFill="False">
+                            <Slider
+                                x:Name="VolumeSlider"
+                                Width="100"
+                                VerticalAlignment="Center"
+                                AutoToolTipPlacement="BottomRight"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                                IsMoveToPointEnabled="True"
+                                Maximum="100"
+                                Value="{Binding CurrentVolume}" />
+                            <Button
+                                Width="24"
+                                Height="24"
+                                Margin="5"
+                                Command="{Binding MuteCommand}"
+                                DockPanel.Dock="Right"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                                ToolTip="Mute">
+                                <materialDesign:PackIcon Kind="VolumeOff" />
+                            </Button>
+                        </DockPanel>
+                    </DockPanel>
+                </materialDesign:ColorZone>
 
-                <GridSplitter HorizontalAlignment="Stretch" Width="5" Grid.Column="1" />
+                <ContentControl>
+                    <ContentControl.Style>
+                        <Style TargetType="{x:Type ContentControl}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ConfigurationModel.Enable}" Value="{x:Static Utils:DisplayOption.Counters}">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource CounterListView}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConfigurationModel.Enable}" Value="{x:Static Utils:DisplayOption.Sounds}">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource SoundListView}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
 
-                <ContentControl ContentTemplate="{StaticResource SoundListView}" Grid.Column="2" />
-            </Grid>
-        </ContentControl>
+                    <Grid x:Name="splitterGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding CountersWidth, Mode=TwoWay}" MinWidth="180" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="{Binding SoundsWidth, Mode=TwoWay}" MinWidth="180" />
+                        </Grid.ColumnDefinitions>
 
-    </DockPanel>
+                        <ContentControl Grid.Column="0" ContentTemplate="{StaticResource CounterListView}" />
+
+                        <GridSplitter
+                            Grid.Column="1"
+                            Width="5"
+                            HorizontalAlignment="Stretch" />
+
+                        <ContentControl Grid.Column="2" ContentTemplate="{StaticResource SoundListView}" />
+                    </Grid>
+                </ContentControl>
+            </DockPanel>
+        </materialDesign:DialogHost>
+    </materialDesign:DrawerHost>
 </UserControl>
