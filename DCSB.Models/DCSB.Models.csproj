@@ -74,6 +74,10 @@
     <Compile Include="SoundShortcuts.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DCSB.Colors\DCSB.Colors.csproj">
+      <Project>{81163049-23A8-4E66-9D5B-521654545A91}</Project>
+      <Name>DCSB.Colors</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DCSB.Utils\DCSB.Utils.csproj">
       <Project>{46301E60-300F-4447-BC41-2FF3A317CF65}</Project>
       <Name>DCSB.Utils</Name>

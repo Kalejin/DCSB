@@ -71,6 +71,9 @@
     <Compile Include="..\AssemblyVersionInfo.cs">
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
+    <Compile Include="BindKeysView.xaml.cs">
+      <DependentUpon>BindKeysView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CounterView.xaml.cs">
       <DependentUpon>CounterView.xaml</DependentUpon>
     </Compile>
@@ -107,6 +110,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BindKeysView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CounterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -161,9 +168,17 @@
       <Project>{b552c60b-b427-49bc-954a-fc070f8b457b}</Project>
       <Name>DCSB.Controls</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DCSB.Input\DCSB.Input.csproj">
+      <Project>{05392A89-A4FD-489E-BA4A-01E8D68D8088}</Project>
+      <Name>DCSB.Input</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DCSB.Interactivity\DCSB.Interactivity.csproj">
       <Project>{7fe35bb8-ffb7-40e9-8431-433d9def0eb3}</Project>
       <Name>DCSB.Interactivity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DCSB.Models\DCSB.Models.csproj">
+      <Project>{26AEFA87-880C-4BF2-9BAB-4426DFB6F9C3}</Project>
+      <Name>DCSB.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\DCSB.Utils\DCSB.Utils.csproj">
       <Project>{46301e60-300f-4447-bc41-2ff3a317cf65}</Project>

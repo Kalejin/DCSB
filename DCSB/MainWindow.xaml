@@ -35,10 +35,6 @@
     <i:Interaction.Behaviors>
         <Interactivity:OpenCloseWindowBehavior
             DataContext="{Binding}"
-            Open="{Binding ApplicationStateModel.SettingsOpened, Mode=TwoWay}"
-            WindowType="local:SettingsWindow" />
-        <Interactivity:OpenCloseWindowBehavior
-            DataContext="{Binding}"
             Open="{Binding ApplicationStateModel.SoundOpened, Mode=TwoWay}"
             WindowType="local:SoundWindow" />
         <Interactivity:OpenCloseWindowBehavior

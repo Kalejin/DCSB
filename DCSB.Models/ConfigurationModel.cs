@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using DCSB.Utils;
 using System.Xml.Serialization;
+using DCSB.Colors;
 
 namespace DCSB.Models
 {
@@ -135,6 +136,39 @@ namespace DCSB.Models
             {
                 _enable = value;
                 RaisePropertyChanged("Enable");
+            }
+        }
+
+        private bool _darkTheme;
+        public bool DarkTheme
+        {
+            get { return _darkTheme; }
+            set
+            {
+                _darkTheme = value;
+                RaisePropertyChanged("DarkTheme");
+            }
+        }
+
+        private string _primaryColor;
+        public string PrimaryColor
+        {
+            get { return _primaryColor; }
+            set
+            {
+                _primaryColor = value;
+                RaisePropertyChanged("PrimaryColor");
+            }
+        }
+
+        private string _accentColor;
+        public string AccentColor
+        {
+            get { return _accentColor; }
+            set
+            {
+                _accentColor = value;
+                RaisePropertyChanged("AccentColor");
             }
         }
 

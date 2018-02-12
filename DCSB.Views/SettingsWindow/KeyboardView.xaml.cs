@@ -1,28 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DCSB.Models;
+using DCSB.ViewModels;
+using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DCSB.Views.SettingsWindow
 {
-    /// <summary>
-    /// Interaction logic for KeyboardView.xaml
-    /// </summary>
     public partial class KeyboardView : UserControl
     {
         public KeyboardView()
         {
             InitializeComponent();
+        }
+
+        private async void TextBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is ViewModel viewModel && 
+                sender is FrameworkElement frameworkElement && 
+                frameworkElement.DataContext is IBindable bindable)
+            {
+                viewModel.BindKeysViewModel.Bindable = bindable;
+                BindKeysView view = new BindKeysView
+                {
+                    DataContext = viewModel.BindKeysViewModel
+                };
+
+                await DialogHost.Show(view, "KeyboardViewDialog");
+            }
         }
     }
 }

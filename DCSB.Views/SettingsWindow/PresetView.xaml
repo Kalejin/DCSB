@@ -93,7 +93,7 @@
                     Height="{Binding ActualHeight, ElementName=NameField}"
                     Margin="3"
                     Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                    Interactivity:Commands.DoubleClickCommandParameter="{Binding SelectedPreset}"
+                    Interactivity:Commands.CommandParameter="{Binding SelectedPreset}"
                     Cursor="Arrow"
                     IsReadOnly="True"
                     Text="{Binding SelectedPreset.Keys, Converter={StaticResource vKeysToStringConverter}}" />

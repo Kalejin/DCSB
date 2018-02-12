@@ -41,7 +41,7 @@
         <TextBox Grid.Row="2" Grid.Column="1" Margin="5" IsReadOnly="True"
                  Text="{Binding ApplicationStateModel.ModifiedSound.Keys, Converter={StaticResource vKeysToStringConverter}}"
                  Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                 Interactivity:Commands.DoubleClickCommandParameter="{Binding ApplicationStateModel.ModifiedSound}" />
+                 Interactivity:Commands.CommandParameter="{Binding ApplicationStateModel.ModifiedSound}" />
         <Button Grid.Row="2" Grid.Column="2" Margin="5" Command="{Binding BindKeysCommand}" 
                 CommandParameter="{Binding ApplicationStateModel.ModifiedSound}">...</Button>
 

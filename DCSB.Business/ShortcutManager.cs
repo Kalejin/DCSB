@@ -22,19 +22,6 @@ namespace DCSB.Business
             _random = new Random();
         }
 
-        public void KeyUp(VKey key, List<VKey> pressedKeys)
-        {
-            if (_applicationStateModel.ModifiedBindable != null)
-            {
-                _applicationStateModel.ModifiedBindable.Keys.Clear();
-                foreach (VKey pressedKey in pressedKeys)
-                    _applicationStateModel.ModifiedBindable.Keys.Add(pressedKey);
-
-                _applicationStateModel.BindKeysOpened = false;
-                _applicationStateModel.ModifiedBindable = null;
-            }
-        }
-
         public void KeyDown(VKey key, List<VKey> pressedKeys)
         {
             if (_configurationModel.Enable == DisplayOption.Counters || _configurationModel.Enable == DisplayOption.Both)

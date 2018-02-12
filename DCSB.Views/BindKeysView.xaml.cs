@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DCSB
+namespace DCSB.Views
 {
     /// <summary>
-    /// Interaction logic for SettingsWindow.xaml
+    /// Interaction logic for BindKeysView.xaml
     /// </summary>
-    public partial class SettingsWindow : Window
+    public partial class BindKeysView : UserControl
     {
-        public SettingsWindow()
+        public BindKeysView()
         {
             InitializeComponent();
         }

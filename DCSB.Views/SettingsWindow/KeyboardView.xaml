@@ -20,236 +20,67 @@
 
     <UserControl.Resources>
         <Converters:VKeysToStringConverter x:Key="vKeysToStringConverter" />
+
+        <Style x:Key="KeyBindTextBox" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+            <Setter Property="Margin" Value="3,8" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Text" Value="{Binding Keys, Converter={StaticResource vKeysToStringConverter}}" />
+            <EventSetter Event="PreviewMouseLeftButtonUp" Handler="TextBox_PreviewMouseDown" />
+        </Style>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel>
+        <materialDesign:DialogHost CloseOnClickAway="True"
+                                   Identifier="KeyboardViewDialog">
             <GroupBox Header="Hotkeys">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
+                <StackPanel>
+                    <materialDesign:Card Padding="5"
+                                         Margin="0,0,0,5">
+                        <StackPanel>
+                            <TextBox
+                                materialDesign:HintAssist.Hint="Next Counter"
+                                Style="{StaticResource KeyBindTextBox}"
+                                DataContext="{Binding ConfigurationModel.CounterShortcuts.Next}" />
+                            <TextBox
+                                materialDesign:HintAssist.Hint="Previous Counter"
+                                Style="{StaticResource KeyBindTextBox}"
+                                DataContext="{Binding ConfigurationModel.CounterShortcuts.Previous}" />
+                            <TextBox
+                                materialDesign:HintAssist.Hint="Increment Counter"
+                                Style="{StaticResource KeyBindTextBox}"
+                                DataContext="{Binding ConfigurationModel.CounterShortcuts.Increment}" />
+                            <TextBox
+                                materialDesign:HintAssist.Hint="Decrement Counter"
+                                Style="{StaticResource KeyBindTextBox}"
+                                DataContext="{Binding ConfigurationModel.CounterShortcuts.Decrement}" />
+                            <TextBox
+                                materialDesign:HintAssist.Hint="Reset Counter"
+                                Style="{StaticResource KeyBindTextBox}"
+                                DataContext="{Binding ConfigurationModel.CounterShortcuts.Reset}" />
+                        </StackPanel>
+                    </materialDesign:Card>
 
-                    <Label
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        VerticalContentAlignment="Center">
-                        Next:
-                    </Label>
-                    <TextBox
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="3"
-                        VerticalContentAlignment="Center"
-                        Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                        Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.CounterShortcuts.Next}"
-                        Cursor="Arrow"
-                        IsReadOnly="True"
-                        Text="{Binding ConfigurationModel.CounterShortcuts.Next.Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="2"
-                        Margin="3"
-                        Command="{Binding BindKeysCommand}"
-                        CommandParameter="{Binding ConfigurationModel.CounterShortcuts.Next}">
-                        ...
-                    </Button>
-
-                    <Label
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        VerticalContentAlignment="Center">
-                        Previous:
-                    </Label>
-                    <TextBox
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="3"
-                        VerticalContentAlignment="Center"
-                        Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                        Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.CounterShortcuts.Previous}"
-                        Cursor="Arrow"
-                        IsReadOnly="True"
-                        Text="{Binding ConfigurationModel.CounterShortcuts.Previous.Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                    <Button
-                        Grid.Row="1"
-                        Grid.Column="2"
-                        Margin="3"
-                        Command="{Binding BindKeysCommand}"
-                        CommandParameter="{Binding ConfigurationModel.CounterShortcuts.Previous}">
-                        ...
-                    </Button>
-
-                    <Label
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        VerticalContentAlignment="Center">
-                        Increment:
-                    </Label>
-                    <TextBox
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Margin="3"
-                        VerticalContentAlignment="Center"
-                        Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                        Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.CounterShortcuts.Increment}"
-                        Cursor="Arrow"
-                        IsReadOnly="True"
-                        Text="{Binding ConfigurationModel.CounterShortcuts.Increment.Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                    <Button
-                        Grid.Row="2"
-                        Grid.Column="2"
-                        Margin="3"
-                        Command="{Binding BindKeysCommand}"
-                        CommandParameter="{Binding ConfigurationModel.CounterShortcuts.Increment}">
-                        ...
-                    </Button>
-
-                    <Label
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        VerticalContentAlignment="Center">
-                        Decrement:
-                    </Label>
-                    <TextBox
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Margin="3"
-                        VerticalContentAlignment="Center"
-                        Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                        Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.CounterShortcuts.Decrement}"
-                        Cursor="Arrow"
-                        IsReadOnly="True"
-                        Text="{Binding ConfigurationModel.CounterShortcuts.Decrement.Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                    <Button
-                        Grid.Row="3"
-                        Grid.Column="2"
-                        Margin="3"
-                        Command="{Binding BindKeysCommand}"
-                        CommandParameter="{Binding ConfigurationModel.CounterShortcuts.Decrement}">
-                        ...
-                    </Button>
-
-                    <Label
-                        Grid.Row="4"
-                        Grid.Column="0"
-                        VerticalContentAlignment="Center">
-                        Reset:
-                    </Label>
-                    <TextBox
-                        Grid.Row="4"
-                        Grid.Column="1"
-                        Margin="3"
-                        VerticalContentAlignment="Center"
-                        Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                        Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.CounterShortcuts.Reset}"
-                        Cursor="Arrow"
-                        IsReadOnly="True"
-                        Text="{Binding ConfigurationModel.CounterShortcuts.Reset.Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                    <Button
-                        Grid.Row="4"
-                        Grid.Column="2"
-                        Margin="3"
-                        Command="{Binding BindKeysCommand}"
-                        CommandParameter="{Binding ConfigurationModel.CounterShortcuts.Reset}">
-                        ...
-                    </Button>
-
-                    <Separator
-                        Grid.Row="5"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Margin="3,10" />
-
-                    <Label
-                        Grid.Row="6"
-                        Grid.Column="0"
-                        VerticalContentAlignment="Center">
-                        Pause:
-                    </Label>
-                    <TextBox
-                        Grid.Row="6"
-                        Grid.Column="1"
-                        Margin="3"
-                        VerticalContentAlignment="Center"
-                        Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                        Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.SoundShortcuts.Pause}"
-                        Cursor="Arrow"
-                        IsReadOnly="True"
-                        Text="{Binding ConfigurationModel.SoundShortcuts.Pause.Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                    <Button
-                        Grid.Row="6"
-                        Grid.Column="2"
-                        Margin="3"
-                        Command="{Binding BindKeysCommand}"
-                        CommandParameter="{Binding ConfigurationModel.SoundShortcuts.Pause}">
-                        ...
-                    </Button>
-
-                    <Label
-                        Grid.Row="7"
-                        Grid.Column="0"
-                        VerticalContentAlignment="Center">
-                        Continue:
-                    </Label>
-                    <TextBox
-                        Grid.Row="7"
-                        Grid.Column="1"
-                        Margin="3"
-                        VerticalContentAlignment="Center"
-                        Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                        Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.SoundShortcuts.Continue}"
-                        Cursor="Arrow"
-                        IsReadOnly="True"
-                        Text="{Binding ConfigurationModel.SoundShortcuts.Continue.Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                    <Button
-                        Grid.Row="7"
-                        Grid.Column="2"
-                        Margin="3"
-                        Command="{Binding BindKeysCommand}"
-                        CommandParameter="{Binding ConfigurationModel.SoundShortcuts.Continue}">
-                        ...
-                    </Button>
-
-                    <Label
-                        Grid.Row="8"
-                        Grid.Column="0"
-                        VerticalContentAlignment="Center">
-                        Stop:
-                    </Label>
-                    <TextBox
-                        Grid.Row="8"
-                        Grid.Column="1"
-                        Margin="3"
-                        VerticalContentAlignment="Center"
-                        Interactivity:Commands.DoubleClickCommand="{Binding BindKeysCommand}"
-                        Interactivity:Commands.DoubleClickCommandParameter="{Binding ConfigurationModel.SoundShortcuts.Stop}"
-                        Cursor="Arrow"
-                        IsReadOnly="True"
-                        Text="{Binding ConfigurationModel.SoundShortcuts.Stop.Keys, Converter={StaticResource vKeysToStringConverter}}" />
-                    <Button
-                        Grid.Row="8"
-                        Grid.Column="2"
-                        Margin="3"
-                        Command="{Binding BindKeysCommand}"
-                        CommandParameter="{Binding ConfigurationModel.SoundShortcuts.Stop}">
-                        ...
-                    </Button>
-                </Grid>
+                    <materialDesign:Card Padding="5">
+                        <StackPanel>
+                            <TextBox
+                                materialDesign:HintAssist.Hint="Puse All Sounds"
+                                Style="{StaticResource KeyBindTextBox}"
+                                DataContext="{Binding ConfigurationModel.SoundShortcuts.Pause}" />
+                            <TextBox
+                                materialDesign:HintAssist.Hint="Continue"
+                                Style="{StaticResource KeyBindTextBox}"
+                                DataContext="{Binding ConfigurationModel.SoundShortcuts.Continue}" />
+                            <TextBox
+                                materialDesign:HintAssist.Hint="Stop All Sounds"
+                                Style="{StaticResource KeyBindTextBox}"
+                                DataContext="{Binding ConfigurationModel.SoundShortcuts.Stop}" />
+                        </StackPanel>
+                    </materialDesign:Card>
+                </StackPanel>
             </GroupBox>
-        </StackPanel>
+        </materialDesign:DialogHost>
     </ScrollViewer>
 </UserControl>

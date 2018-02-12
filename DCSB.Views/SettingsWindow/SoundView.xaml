@@ -41,63 +41,67 @@
                     <TextBlock VerticalAlignment="Center">Overlap sounds</TextBlock>
                 </StackPanel>
 
-                <Separator Margin="3" />
-
-                <TextBlock Margin="3,10">Output devices</TextBlock>
-
-                <ComboBox
-                    Margin="3"
-                    DisplayMemberPath="Name"
-                    ItemsSource="{Binding AvailableOutputDevices}"
-                    SelectedIndex="{Binding PrimaryOutputDeviceIndex}" />
-                <DockPanel Margin="0,5,0,10">
-                    <Button
-                        Command="{Binding MutePrimaryCommand}"
-                        DockPanel.Dock="Left"
-                        Foreground="{DynamicResource PrimaryHueMidBrush}"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        ToolTip="Mute">
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Kind="VolumeOff" />
-                    </Button>
-                    <Slider
+                <materialDesign:Card Padding="5">
+                    <StackPanel>
+                        <ComboBox
                         Margin="3"
-                        VerticalAlignment="Center"
-                        AutoToolTipPlacement="BottomRight"
-                        DockPanel.Dock="Right"
-                        IsMoveToPointEnabled="True"
-                        Maximum="100"
-                        Value="{Binding PrimaryDeviceVolume}" />
-                </DockPanel>
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding AvailableOutputDevices}"
+                        SelectedIndex="{Binding PrimaryOutputDeviceIndex}"
+                        materialDesign:HintAssist.Hint="Primary Output Device"
+                        Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+                        <DockPanel Margin="0,5,0,10">
+                            <Button
+                            Command="{Binding MutePrimaryCommand}"
+                            DockPanel.Dock="Left"
+                            Foreground="{DynamicResource PrimaryHueMidBrush}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Mute">
+                                <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                Kind="VolumeOff" />
+                            </Button>
+                            <Slider
+                            Margin="3"
+                            VerticalAlignment="Center"
+                            AutoToolTipPlacement="BottomRight"
+                            DockPanel.Dock="Right"
+                            IsMoveToPointEnabled="True"
+                            Maximum="100"
+                            Value="{Binding PrimaryDeviceVolume}" />
+                        </DockPanel>
 
-                <ComboBox
-                    Margin="3"
-                    DisplayMemberPath="Name"
-                    ItemsSource="{Binding SecondaryOutputDevices}"
-                    SelectedIndex="{Binding SecondaryOutputDeviceIndex}" />
-                <DockPanel Margin="0,5,0,0">
-                    <Button
-                        Command="{Binding MuteSecondaryCommand}"
-                        DockPanel.Dock="Left"
-                        Foreground="{DynamicResource PrimaryHueMidBrush}"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        ToolTip="Mute">
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Kind="VolumeOff" />
-                    </Button>
-                    <Slider
+                        <ComboBox
                         Margin="3"
-                        VerticalAlignment="Center"
-                        AutoToolTipPlacement="BottomRight"
-                        DockPanel.Dock="Right"
-                        IsMoveToPointEnabled="True"
-                        Maximum="100"
-                        Value="{Binding SecondaryDeviceVolume}" />
-                </DockPanel>
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding SecondaryOutputDevices}"
+                        SelectedIndex="{Binding SecondaryOutputDeviceIndex}"
+                        materialDesign:HintAssist.Hint="Secondary Output Device"
+                        Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+                        <DockPanel Margin="0,5,0,0">
+                            <Button
+                            Command="{Binding MuteSecondaryCommand}"
+                            DockPanel.Dock="Left"
+                            Foreground="{DynamicResource PrimaryHueMidBrush}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Mute">
+                                <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                Kind="VolumeOff" />
+                            </Button>
+                            <Slider
+                            Margin="3"
+                            VerticalAlignment="Center"
+                            AutoToolTipPlacement="BottomRight"
+                            DockPanel.Dock="Right"
+                            IsMoveToPointEnabled="True"
+                            Maximum="100"
+                            Value="{Binding SecondaryDeviceVolume}" />
+                        </DockPanel>
+                    </StackPanel>
+                </materialDesign:Card>
             </StackPanel>
         </GroupBox>
     </ScrollViewer>

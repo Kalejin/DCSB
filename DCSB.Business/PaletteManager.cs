@@ -1,5 +1,7 @@
 ﻿using DCSB.Colors;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -36,6 +38,114 @@ namespace DCSB.Business
 
             Application.Current.Resources.MergedDictionaries.Remove(existingMahAppsResourceDictionary);
             Application.Current.Resources.MergedDictionaries.Add(newMahAppsResourceDictionary);
+        }
+
+        public virtual void ReplacePrimaryColor(Swatch swatch)
+        {
+            if (swatch == null) throw new ArgumentNullException(nameof(swatch));
+
+            var palette = QueryPalette();
+
+            var list = swatch.PrimaryHues.ToList();
+            var light = list[palette.PrimaryLightHueIndex];
+            var mid = list[palette.PrimaryMidHueIndex];
+            var dark = list[palette.PrimaryDarkHueIndex];
+
+            ReplacePrimaryColor(swatch, light, mid, dark);
+        }
+
+        public virtual void ReplaceAccentColor(Swatch swatch)
+        {
+            if (swatch == null) throw new ArgumentNullException(nameof(swatch));
+
+            var palette = QueryPalette();
+
+            foreach (var color in swatch.AccentHues)
+            {
+                ReplaceEntry(color.Name, color.Color);
+                ReplaceEntry(color.Name + "Foreground", color.Foreground);
+            }
+
+            var hue = swatch.AccentHues.ElementAt(palette.AccentHueIndex);
+
+            ReplaceEntry("SecondaryAccentBrush", new SolidColorBrush(hue.Color));
+            ReplaceEntry("SecondaryAccentForegroundBrush", new SolidColorBrush(hue.Foreground));
+        }
+
+        public Palette QueryPalette()
+        {
+            var swatchesProvider = new SwatchesProvider();
+            var swatchByPrimaryHueIndex = swatchesProvider
+                .Swatches
+                .SelectMany(s => s.PrimaryHues.Select(h => new { s, h }))
+                .ToDictionary(a => a.h.Color, a => a.s);
+            var swatchByAccentHueIndex = swatchesProvider
+                .Swatches
+                .Where(s => s.IsAccented)
+                .SelectMany(s => s.AccentHues.Select(h => new { s, h }))
+                .ToDictionary(a => a.h.Color, a => a.s);
+
+            var primaryMidBrush = GetBrush("PrimaryHueMidBrush");
+            var accentBrush = GetBrush("SecondaryAccentBrush");
+
+            if (!swatchByPrimaryHueIndex.TryGetValue(primaryMidBrush.Color, out Swatch primarySwatch))
+                throw new InvalidOperationException("PrimaryHueMidBrush is not from standard swatches");
+            if (!swatchByAccentHueIndex.TryGetValue(accentBrush.Color, out Swatch accentSwatch))
+                throw new InvalidOperationException("SecondaryAccentBrush is not from standard swatches");
+
+            var primaryLightBrush = GetBrush("PrimaryHueLightBrush");
+            var primaryDarkBrush = GetBrush("PrimaryHueDarkBrush");
+
+            var primaryLightHueIndex = GetHueIndex(primarySwatch, primaryLightBrush.Color, false);
+            var primaryMidHueIndex = GetHueIndex(primarySwatch, primaryMidBrush.Color, false);
+            var primaryDarkHueIndex = GetHueIndex(primarySwatch, primaryDarkBrush.Color, false);
+            var accentHueIndex = GetHueIndex(accentSwatch, accentBrush.Color, true);
+
+            return new Palette(primarySwatch, accentSwatch, primaryLightHueIndex, primaryMidHueIndex, primaryDarkHueIndex, accentHueIndex);
+        }
+
+        private static int GetHueIndex(Swatch swatch, Color color, bool isAccent)
+        {
+            var x = (isAccent ? swatch.AccentHues : swatch.PrimaryHues).Select((h, i) => new { h, i })
+                .FirstOrDefault(a => a.h.Color == color);
+            if (x == null)
+                throw new InvalidOperationException($"Color {color} not found in swatch {swatch.Name}.");
+            return x.i;
+        }
+
+        private static SolidColorBrush GetBrush(string name)
+        {
+            var group = GetTree(Application.Current.Resources)
+                .SelectMany(d => GetEntries(d).Select(e => new { d, e }))
+                .Where(a => a.e.Value is SolidColorBrush)
+                .GroupBy(a => (SolidColorBrush)a.e.Value)
+                .SingleOrDefault(g => g.First().e.Key.Equals(name));
+            if (group == null)
+                throw new InvalidOperationException($"Unable to safely determine a single resource definition for {name}.");
+            var solidColorBrush = group.First().e.Value as SolidColorBrush;
+            if (solidColorBrush == null)
+                throw new InvalidOperationException($"Expected {name} to be a SolidColorBrush");
+
+            return solidColorBrush;
+        }
+
+        private static IEnumerable<DictionaryEntry> GetEntries(IDictionary dictionary)
+        {
+            var dictionaryEnumerator = dictionary.GetEnumerator();
+            while (dictionaryEnumerator.MoveNext())
+            {
+                yield return dictionaryEnumerator.Entry;
+            }
+        }
+
+        private static IEnumerable<ResourceDictionary> GetTree(ResourceDictionary node)
+        {
+            yield return node;
+
+            foreach (var descendant in node.MergedDictionaries.SelectMany(GetTree))
+            {
+                yield return descendant;
+            }
         }
 
         private static void ReplacePrimaryColor(Swatch swatch, Hue light, Hue mid, Hue dark)
