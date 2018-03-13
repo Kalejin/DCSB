@@ -58,10 +58,10 @@ namespace DCSB.Business
         public SoundManager(OutputDevice primaryDevice, OutputDevice secondaryDevice)
         {
             _random = new Random();
-            _primarySoundPlayer = new AudioPlaybackEngine(primaryDevice.Number);
-            if (secondaryDevice.Number != -2)
+            _primarySoundPlayer = new AudioPlaybackEngine(primaryDevice.Name);
+            if (secondaryDevice.Name != "Disabled")
             {
-                _secondarySoundPlayer = new AudioPlaybackEngine(secondaryDevice.Number);
+                _secondarySoundPlayer = new AudioPlaybackEngine(secondaryDevice.Name);
             }
         }
 
@@ -104,7 +104,7 @@ namespace DCSB.Business
 
         public void ChangePrimaryDevice(OutputDevice device)
         {
-            AudioPlaybackEngine tmp = new AudioPlaybackEngine(device.Number)
+            AudioPlaybackEngine tmp = new AudioPlaybackEngine(device.Name)
             {
                 Overlap = Overlap,
                 Volume = Volume
@@ -121,7 +121,7 @@ namespace DCSB.Business
                 _secondarySoundPlayer.Stop();
                 _secondarySoundPlayer.Dispose();
             }
-            _secondarySoundPlayer = device.Number == -2 ? null : new AudioPlaybackEngine(device.Number)
+            _secondarySoundPlayer = device.Name == "Disabled" ? null : new AudioPlaybackEngine(device.Name)
             {
                 Overlap = Overlap,
                 Volume = Volume

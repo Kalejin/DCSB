@@ -1,8 +1,10 @@
 ﻿using DCSB.Models;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace DCSB.SoundPlayer
@@ -22,9 +24,18 @@ namespace DCSB.SoundPlayer
 
         public bool Overlap { get; set; }
 
-        public AudioPlaybackEngine(int deviceNumber)
+        public AudioPlaybackEngine(string deviceName)
         {
-            _outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
+            OutputDevice device = EnumerateDevices().Where(x => x.Name == deviceName).FirstOrDefault();
+            if (device == null)
+            {
+                _outputDevice = new WaveOutEvent() { DeviceNumber = -1 };
+            }
+            else
+            {
+                _outputDevice = new WaveOutEvent() { DeviceNumber = device.Number };
+            }
+            
             _mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(44100, 2)) { ReadFully = true };
             _outputDevice.Init(_mixer);
             _outputDevice.Play();
@@ -81,13 +92,17 @@ namespace DCSB.SoundPlayer
 
         public IList<OutputDevice> EnumerateDevices()
         {
+            var allDevices = new MMDeviceEnumerator().EnumerateAudioEndPoints(DataFlow.Render, DeviceState.All);
+
             IList<OutputDevice> devices = new List<OutputDevice>
             {
                 new OutputDevice(-1, "Default Output Device")
             };
             for (int n = 0; n < WaveOut.DeviceCount; n++)
             {
-                devices.Add(new OutputDevice(n, WaveOut.GetCapabilities(n).ProductName));
+                string incompleteName = WaveOut.GetCapabilities(n).ProductName;
+                MMDevice device = allDevices.Where(x => x.FriendlyName.StartsWith(incompleteName)).FirstOrDefault();
+                devices.Add(new OutputDevice(n, device == null ? incompleteName : device.FriendlyName));
             }
             return devices;
         }

@@ -196,7 +196,7 @@ namespace DCSB.ViewModels
                 IList<OutputDevice> devices = AvailableOutputDevices;
                 for (int i = 0; i < devices.Count; i++)
                 {
-                    if (devices[i].Number == _configurationModel.PrimaryOutputDevice.Number)
+                    if (devices[i].Name == _configurationModel.PrimaryOutputDevice.Name)
                     {
                         return i;
                     }
@@ -218,7 +218,7 @@ namespace DCSB.ViewModels
                 IList<OutputDevice> devices = SecondaryOutputDevices;
                 for (int i = 0; i < devices.Count; i++)
                 {
-                    if (devices[i].Number == _configurationModel.SecondaryOutputDevice.Number)
+                    if (devices[i].Name == _configurationModel.SecondaryOutputDevice.Name)
                     {
                         return i;
                     }
