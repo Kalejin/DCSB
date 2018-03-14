@@ -1,4 +1,5 @@
 ﻿using DCSB.Models;
+using NAudio;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
@@ -24,18 +25,9 @@ namespace DCSB.SoundPlayer
 
         public bool Overlap { get; set; }
 
-        public AudioPlaybackEngine(string deviceName)
+        public AudioPlaybackEngine(int deviceNumber)
         {
-            OutputDevice device = EnumerateDevices().Where(x => x.Name == deviceName).FirstOrDefault();
-            if (device == null)
-            {
-                _outputDevice = new WaveOutEvent() { DeviceNumber = -1 };
-            }
-            else
-            {
-                _outputDevice = new WaveOutEvent() { DeviceNumber = device.Number };
-            }
-            
+            _outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
             _mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(44100, 2)) { ReadFully = true };
             _outputDevice.Init(_mixer);
             _outputDevice.Play();
@@ -87,24 +79,8 @@ namespace DCSB.SoundPlayer
         {
             _mixer.RemoveAllMixerInputs();
             _outputDevice.Stop();
-            _outputDevice.Init(_mixer);
-        }
-
-        public IList<OutputDevice> EnumerateDevices()
-        {
-            var allDevices = new MMDeviceEnumerator().EnumerateAudioEndPoints(DataFlow.Render, DeviceState.All);
-
-            IList<OutputDevice> devices = new List<OutputDevice>
-            {
-                new OutputDevice(-1, "Default Output Device")
-            };
-            for (int n = 0; n < WaveOut.DeviceCount; n++)
-            {
-                string incompleteName = WaveOut.GetCapabilities(n).ProductName;
-                MMDevice device = allDevices.Where(x => x.FriendlyName.StartsWith(incompleteName)).FirstOrDefault();
-                devices.Add(new OutputDevice(n, device == null ? incompleteName : device.FriendlyName));
-            }
-            return devices;
+            if (EnumerateDevices().ContainsKey(_outputDevice.DeviceNumber))
+                _outputDevice.Init(_mixer);
         }
 
         private ISampleProvider ConvertToRightChannelCount(ISampleProvider input)
@@ -144,6 +120,30 @@ namespace DCSB.SoundPlayer
         private int RevertVolume(float volume)
         {
             return (int)(Math.Log(volume * (_volumePowBase - 1) + 1) / Math.Log(_volumePowBase));
+        }
+
+        public static IDictionary<int, string> EnumerateDevices()
+        {
+            var allDevices = new MMDeviceEnumerator().EnumerateAudioEndPoints(DataFlow.Render, DeviceState.All);
+
+            Dictionary<int, string> devices = new Dictionary<int, string>
+            {
+                [-2] = "Disabled"
+            };
+
+            if (WaveOut.DeviceCount != 0)
+            {
+                devices[-1] = "Default Output Device";
+
+                for (int n = 0; n < WaveOut.DeviceCount; n++)
+                {
+                    string incompleteName = WaveOut.GetCapabilities(n).ProductName;
+                    MMDevice device = allDevices.Where(x => x.FriendlyName.StartsWith(incompleteName)).FirstOrDefault();
+                    devices[n] = device == null ? incompleteName : device.FriendlyName;
+                }
+            }
+
+            return devices;
         }
 
         public void Dispose()

@@ -23,7 +23,7 @@ namespace DCSB.Models
             get { return _name; }
             set
             {
-                _name = Name;
+                _name = value;
                 RaisePropertyChanged("Name");
             }
         }

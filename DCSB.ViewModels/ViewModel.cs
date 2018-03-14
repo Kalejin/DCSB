@@ -10,6 +10,7 @@ using DCSB.Input;
 using DCSB.Models;
 using DCSB.Utils;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace DCSB.ViewModels
 {
@@ -38,14 +39,7 @@ namespace DCSB.ViewModels
             _configurationModel = _configurationManager.Load();
             if (_configurationModel.PresetCollection.Count == 0) _configurationModel.PresetCollection.Add(new Preset() { Name = "New Preset" } );
             _openFileManager = new OpenFileManager();
-
-            _soundManager = new SoundManager(_configurationModel.PrimaryOutputDevice, _configurationModel.SecondaryOutputDevice)
-            {
-                Volume = _configurationModel.Volume / 100f,
-                PrimaryDeviceVolume = _configurationModel.PrimaryDeviceVolume / 100f,
-                SecondaryDeviceVolume = _configurationModel.SecondaryDeviceVolume / 100f,
-                Overlap = _configurationModel.Overlap
-            };
+            _soundManager = new SoundManager(_configurationModel);
             _shortcutManager = new ShortcutManager(_applicationStateModel, _configurationModel, _soundManager);
             _updateManager = new UpdateManager();
 
@@ -174,62 +168,36 @@ namespace DCSB.ViewModels
             }
         }
 
-        public IList<OutputDevice> AvailableOutputDevices
+        public ICollection<string> AvailableOutputs
         {
             get { return _soundManager.EnumerateDevices(); }
         }
 
-        public IList<OutputDevice> SecondaryOutputDevices
+        public string PrimaryOutput
         {
             get
             {
-                IList<OutputDevice> devices = AvailableOutputDevices;
-                devices.Insert(0, new OutputDevice(-2, "Disabled"));
-                return devices;
-            }
-        }
-
-        public int PrimaryOutputDeviceIndex
-        {
-            get
-            {
-                IList<OutputDevice> devices = AvailableOutputDevices;
-                for (int i = 0; i < devices.Count; i++)
-                {
-                    if (devices[i].Name == _configurationModel.PrimaryOutputDevice.Name)
-                    {
-                        return i;
-                    }
-                }
-                return 0;
+                return _configurationModel.PrimaryOutput;
             }
             set
             {
-                _configurationModel.PrimaryOutputDevice = AvailableOutputDevices[value];
-                _soundManager.ChangePrimaryDevice(_configurationModel.PrimaryOutputDevice);
-                RaisePropertyChanged("PrimaryOutputDevice");
+                string selectedDeviceName = _soundManager.ChangePrimaryOutput(value);
+                _configurationModel.PrimaryOutput = selectedDeviceName;
+                RaisePropertyChanged("PrimaryOutput");
             }
         }
 
-        public int SecondaryOutputDeviceIndex
+        public string SecondaryOutput
         {
             get
             {
-                IList<OutputDevice> devices = SecondaryOutputDevices;
-                for (int i = 0; i < devices.Count; i++)
-                {
-                    if (devices[i].Name == _configurationModel.SecondaryOutputDevice.Name)
-                    {
-                        return i;
-                    }
-                }
-                return 0;
+                return _configurationModel.SecondaryOutput;
             }
             set
             {
-                _configurationModel.SecondaryOutputDevice = SecondaryOutputDevices[value];
-                _soundManager.ChangeSecondaryDevice(_configurationModel.SecondaryOutputDevice);
-                RaisePropertyChanged("SecondaryOutputDevice");
+                string selectedDeviceName = _soundManager.ChangeSecondaryOutput(value);
+                _configurationModel.SecondaryOutput = selectedDeviceName;
+                RaisePropertyChanged("SecondaryOutput");
             }
         }
 

@@ -50,25 +50,25 @@ namespace DCSB.Models
             }
         }
 
-        private OutputDevice _primaryOutputDevice;
-        public OutputDevice PrimaryOutputDevice
+        private string _primaryOutput;
+        public string PrimaryOutput
         {
-            get { return _primaryOutputDevice; }
+            get { return _primaryOutput; }
             set
             {
-                _primaryOutputDevice = value;
-                RaisePropertyChanged("PrimaryOutputDevice");
+                _primaryOutput = value;
+                RaisePropertyChanged("PrimaryOutput");
             }
         }
 
-        private OutputDevice _secondaryOutputDevice;
-        public OutputDevice SecondaryOutputDevice
+        private string _secondaryOutput;
+        public string SecondaryOutput
         {
-            get { return _secondaryOutputDevice; }
+            get { return _secondaryOutput; }
             set
             {
-                _secondaryOutputDevice = value;
-                RaisePropertyChanged("SecondaryOutputDevice");
+                _secondaryOutput = value;
+                RaisePropertyChanged("SecondaryOutput");
             }
         }
 
@@ -198,8 +198,6 @@ namespace DCSB.Models
             PresetCollection = new ObservableObjectCollection<Preset>();
             CounterShortcuts = new CounterShortcuts();
             SoundShortcuts = new SoundShortcuts();
-            PrimaryOutputDevice = new OutputDevice(-1, "Default Output Device");
-            SecondaryOutputDevice = new OutputDevice(-2, "Disabled");
 
             PresetCollection.CollectionChanged += (sender, e) => RaisePropertyChanged("PresetCollection");
             PresetCollection.CollectionChanged += (sender, e) => RaisePropertyChanged("SelectedPreset");

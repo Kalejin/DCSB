@@ -2,6 +2,7 @@
 using DCSB.SoundPlayer;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCSB.Business
 {
@@ -18,7 +19,7 @@ namespace DCSB.Business
             set
             {
                 _volume = value;
-                _primarySoundPlayer.Volume = _volume * _primaryDeviceVolume;
+                if (_primarySoundPlayer != null) _primarySoundPlayer.Volume = _volume * _primaryDeviceVolume;
                 if (_secondarySoundPlayer != null) _secondarySoundPlayer.Volume = _volume * _secondaryDeviceVolume;
             }
         }
@@ -30,7 +31,7 @@ namespace DCSB.Business
             set
             {
                 _primaryDeviceVolume = value;
-                _primarySoundPlayer.Volume = _volume * _primaryDeviceVolume;
+                if (_primarySoundPlayer != null) _primarySoundPlayer.Volume = _volume * _primaryDeviceVolume;
             }
         }
 
@@ -45,24 +46,29 @@ namespace DCSB.Business
             }
         }
 
+        private bool _overlap;
         public bool Overlap
         {
-            get { return _primarySoundPlayer.Overlap; }
+            get { return _overlap; }
             set
             {
-                _primarySoundPlayer.Overlap = value;
+                _overlap = value;
+                if (_primarySoundPlayer != null) _primarySoundPlayer.Overlap = value;
                 if (_secondarySoundPlayer != null) _secondarySoundPlayer.Overlap = value;
             }
         }
 
-        public SoundManager(OutputDevice primaryDevice, OutputDevice secondaryDevice)
+        public SoundManager(ConfigurationModel configurationModel)
         {
             _random = new Random();
-            _primarySoundPlayer = new AudioPlaybackEngine(primaryDevice.Name);
-            if (secondaryDevice.Name != "Disabled")
-            {
-                _secondarySoundPlayer = new AudioPlaybackEngine(secondaryDevice.Name);
-            }
+
+            configurationModel.PrimaryOutput = ChangePrimaryOutput(configurationModel.PrimaryOutput);
+            configurationModel.SecondaryOutput = ChangeSecondaryOutput(configurationModel.SecondaryOutput);
+
+            Volume = configurationModel.Volume / 100f;
+            PrimaryDeviceVolume = configurationModel.PrimaryDeviceVolume / 100f;
+            SecondaryDeviceVolume = configurationModel.SecondaryDeviceVolume / 100f;
+            Overlap = configurationModel.Overlap;
         }
 
         public void Play(Sound sound)
@@ -75,7 +81,7 @@ namespace DCSB.Business
             string file = sound.Files[_random.Next(sound.Files.Count)];
             try
             {
-                _primarySoundPlayer.PlaySound(file, sound.Volume / 100f, sound.Loop);
+                if (_primarySoundPlayer != null) _primarySoundPlayer.PlaySound(file, sound.Volume / 100f, sound.Loop);
                 if (_secondarySoundPlayer != null) _secondarySoundPlayer.PlaySound(file, sound.Volume / 100f, sound.Loop);
             }
             catch (Exception ex)
@@ -86,56 +92,86 @@ namespace DCSB.Business
 
         public void Pause()
         {
-            _primarySoundPlayer.Pause();
+            if (_primarySoundPlayer != null) _primarySoundPlayer.Pause();
             if (_secondarySoundPlayer != null) _secondarySoundPlayer.Pause();
         }
 
         public void Continue()
         {
-            _primarySoundPlayer.Continue();
+            if (_primarySoundPlayer != null) _primarySoundPlayer.Continue();
             if (_secondarySoundPlayer != null) _secondarySoundPlayer.Continue();
         }
 
         public void Stop()
         {
-            _primarySoundPlayer.Stop();
+            if (_primarySoundPlayer != null) _primarySoundPlayer.Stop();
             if (_secondarySoundPlayer != null) _secondarySoundPlayer.Stop();
         }
 
-        public void ChangePrimaryDevice(OutputDevice device)
+        private string InstantiateDevice(string deviceName, bool primary, ref AudioPlaybackEngine soundPlayer)
         {
-            AudioPlaybackEngine tmp = new AudioPlaybackEngine(device.Name)
-            {
-                Overlap = Overlap,
-                Volume = Volume
-            };
-            _primarySoundPlayer.Stop();
-            _primarySoundPlayer.Dispose();
-            _primarySoundPlayer = tmp;
-        }
+            KeyValuePair<int, string> device = GetDevice(deviceName, primary);
 
-        public void ChangeSecondaryDevice(OutputDevice device)
-        {
-            if (_secondarySoundPlayer != null)
+            if (device.Equals(default(KeyValuePair<int, string>)) || device.Value == "Disabled")
             {
-                _secondarySoundPlayer.Stop();
-                _secondarySoundPlayer.Dispose();
+                soundPlayer = null;
+                return "Disabled";
             }
-            _secondarySoundPlayer = device.Name == "Disabled" ? null : new AudioPlaybackEngine(device.Name)
-            {
-                Overlap = Overlap,
-                Volume = Volume
-            };
+
+            soundPlayer = new AudioPlaybackEngine(device.Key);
+            return device.Value;
         }
 
-        public IList<OutputDevice> EnumerateDevices()
+        private string ChangeDevice(string deviceName, float deviceVolume, ref AudioPlaybackEngine soundPlayer)
         {
-            return _primarySoundPlayer.EnumerateDevices();
+            if (soundPlayer != null)
+            {
+                soundPlayer.Stop();
+                soundPlayer.Dispose();
+            }
+
+            string selectedDeviceName = InstantiateDevice(deviceName, soundPlayer == _primarySoundPlayer, ref soundPlayer);
+
+            if (soundPlayer != null)
+            {
+                soundPlayer.Overlap = Overlap;
+                soundPlayer.Volume = _volume * deviceVolume;
+            }
+
+            return selectedDeviceName;
+        }
+
+        public string ChangePrimaryOutput(string deviceName)
+        {
+            return ChangeDevice(deviceName, _primaryDeviceVolume, ref _primarySoundPlayer);
+        }
+
+        public string ChangeSecondaryOutput(string deviceName)
+        {
+            return ChangeDevice(deviceName, _secondaryDeviceVolume, ref _secondarySoundPlayer);
+        }
+
+        public ICollection<string> EnumerateDevices()
+        {
+            return AudioPlaybackEngine.EnumerateDevices().Values;
+        }
+
+        public KeyValuePair<int, string> GetDevice(string name, bool primary)
+        {
+            IDictionary<int, string> devices = AudioPlaybackEngine.EnumerateDevices();
+            KeyValuePair<int, string> device = devices.Where(x => x.Value == name).FirstOrDefault();
+
+            if (primary && device.Equals(default(KeyValuePair<int, string>)) && devices.Count > 2)
+            {
+                return new KeyValuePair<int, string>(-1, devices[-1]);
+            }
+
+            return device;
         }
 
         ~SoundManager()
         {
-            _primarySoundPlayer.Dispose();
+            if (_primarySoundPlayer != null) _primarySoundPlayer.Dispose();
             if (_secondarySoundPlayer != null) _secondarySoundPlayer.Dispose();
         }
     }
