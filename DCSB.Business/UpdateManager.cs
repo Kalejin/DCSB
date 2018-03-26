@@ -9,6 +9,8 @@ namespace DCSB.Business
 {
     public class UpdateManager
     {
+        private const string releasesUrl = "https://github.com/Kalejin/DCSB/releases";
+
         public async Task AutoUpdateCheck(Version currentVersion)
         {
             try
@@ -38,19 +40,26 @@ namespace DCSB.Business
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBoxResult result = MessageBox.Show(
+                        $"{ex.Message}\nDo you want to open GitHub to check manually?",
+                        "Update check failed",
+                        MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Process.Start(releasesUrl);
+                }
             }
         }
 
         private void ShowUpdateDialog(Version newVersion)
         {
             MessageBoxResult result = MessageBox.Show(
-                        $"Version {newVersion} is available at https://github.com/Kalejin/DCSB/releases. \nDo you want to open this site?",
+                        $"Version {newVersion} is available at {releasesUrl}. \nDo you want to open this site?",
                         $"New version {newVersion}",
                         MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
-                Process.Start("https://github.com/Kalejin/DCSB/releases");
+                Process.Start(releasesUrl);
             }
         }
 
