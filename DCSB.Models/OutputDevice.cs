@@ -6,6 +6,7 @@ namespace DCSB.Models
     public class OutputDevice : ObservableObject
     {
         private int _number;
+        [XmlIgnore]
         public int Number
         {
             get { return _number; }
@@ -17,13 +18,12 @@ namespace DCSB.Models
         }
 
         private string _name;
-        [XmlIgnore]
         public string Name
         {
             get { return _name; }
             set
             {
-                _name = Name;
+                _name = value;
                 RaisePropertyChanged("Name");
             }
         }

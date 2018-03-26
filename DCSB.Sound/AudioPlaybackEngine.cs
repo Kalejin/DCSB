@@ -1,8 +1,11 @@
 ﻿using DCSB.Models;
+using NAudio;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace DCSB.SoundPlayer
@@ -76,20 +79,8 @@ namespace DCSB.SoundPlayer
         {
             _mixer.RemoveAllMixerInputs();
             _outputDevice.Stop();
-            _outputDevice.Init(_mixer);
-        }
-
-        public IList<OutputDevice> EnumerateDevices()
-        {
-            IList<OutputDevice> devices = new List<OutputDevice>
-            {
-                new OutputDevice(-1, "Default Output Device")
-            };
-            for (int n = 0; n < WaveOut.DeviceCount; n++)
-            {
-                devices.Add(new OutputDevice(n, WaveOut.GetCapabilities(n).ProductName));
-            }
-            return devices;
+            if (EnumerateDevices().ContainsKey(_outputDevice.DeviceNumber))
+                _outputDevice.Init(_mixer);
         }
 
         private ISampleProvider ConvertToRightChannelCount(ISampleProvider input)
@@ -129,6 +120,30 @@ namespace DCSB.SoundPlayer
         private int RevertVolume(float volume)
         {
             return (int)(Math.Log(volume * (_volumePowBase - 1) + 1) / Math.Log(_volumePowBase));
+        }
+
+        public static IDictionary<int, string> EnumerateDevices()
+        {
+            var allDevices = new MMDeviceEnumerator().EnumerateAudioEndPoints(DataFlow.Render, DeviceState.All);
+
+            Dictionary<int, string> devices = new Dictionary<int, string>
+            {
+                [-2] = "Disabled"
+            };
+
+            if (WaveOut.DeviceCount != 0)
+            {
+                devices[-1] = "Default Output Device";
+
+                for (int n = 0; n < WaveOut.DeviceCount; n++)
+                {
+                    string incompleteName = WaveOut.GetCapabilities(n).ProductName;
+                    MMDevice device = allDevices.Where(x => x.FriendlyName.StartsWith(incompleteName)).FirstOrDefault();
+                    devices[n] = device == null ? incompleteName : device.FriendlyName;
+                }
+            }
+
+            return devices;
         }
 
         public void Dispose()

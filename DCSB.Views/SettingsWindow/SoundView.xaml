@@ -51,9 +51,8 @@
                     <ComboBox Grid.Column="1"
                               Grid.Row="0"
                               Margin="3"
-                              DisplayMemberPath="Name"
-                              ItemsSource="{Binding AvailableOutputDevices}"
-                              SelectedIndex="{Binding PrimaryOutputDeviceIndex}" />
+                              ItemsSource="{Binding AvailableOutputs}"
+                              SelectedItem="{Binding PrimaryOutput}" />
                     <DockPanel Grid.Column="1"
                                Grid.Row="1"
                                Margin="0,0,0,5">
@@ -90,9 +89,8 @@
                     <ComboBox Grid.Column="1" 
                               Grid.Row="2"
                               Margin="3"
-                              DisplayMemberPath="Name"
-                              ItemsSource="{Binding SecondaryOutputDevices}" 
-                              SelectedIndex="{Binding SecondaryOutputDeviceIndex}" />
+                              ItemsSource="{Binding AvailableOutputs}" 
+                              SelectedItem="{Binding SecondaryOutput}" />
                     <DockPanel Grid.Column="1"
                                Grid.Row="3">
                         <Controls:IconButton DockPanel.Dock="Left"
