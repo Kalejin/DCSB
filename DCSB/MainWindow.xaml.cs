@@ -16,6 +16,10 @@ namespace DCSB
         {
             InitializeComponent();
 
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            DataContext = new ViewModel();
+
             Icon icon;
             using (Stream stream = System.Windows.Application.GetResourceStream(new Uri("icon.ico", UriKind.Relative)).Stream)
             {
@@ -34,6 +38,11 @@ namespace DCSB
             };
 
             notifyIcon.Click += (sender, args) => Open();
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            System.Windows.MessageBox.Show(e.ExceptionObject.ToString(), "Unhandled exception");
         }
 
         protected override void OnStateChanged(EventArgs e)

@@ -39,9 +39,9 @@
                                                DataContext="{Binding}" />
     </i:Interaction.Behaviors>
 
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <ViewModels:ViewModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <Views:SplitView />
 
