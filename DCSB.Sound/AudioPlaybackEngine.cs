@@ -124,7 +124,7 @@ namespace DCSB.SoundPlayer
 
         public static IDictionary<int, string> EnumerateDevices()
         {
-            var allDevices = new MMDeviceEnumerator().EnumerateAudioEndPoints(DataFlow.Render, DeviceState.All);
+            var allDevices = new MMDeviceEnumerator().EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
 
             Dictionary<int, string> devices = new Dictionary<int, string>
             {
@@ -138,7 +138,13 @@ namespace DCSB.SoundPlayer
                 for (int n = 0; n < WaveOut.DeviceCount; n++)
                 {
                     string incompleteName = WaveOut.GetCapabilities(n).ProductName;
-                    MMDevice device = allDevices.Where(x => x.FriendlyName.StartsWith(incompleteName)).FirstOrDefault();
+                    MMDevice device = null;
+                    try
+                    {
+                        // For some reason getting FriendlyName can cause COMException on some systems with HRESULT 0xE000020B
+                        device = allDevices.Where(x => x.FriendlyName.StartsWith(incompleteName)).FirstOrDefault();
+                    }
+                    catch (COMException) { }
                     devices[n] = device == null ? incompleteName : device.FriendlyName;
                 }
             }
