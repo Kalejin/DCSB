@@ -80,19 +80,22 @@ namespace DCSB.Input
 						{
 							var deviceDesc = Win32.GetDeviceDescription(deviceName);
 
-							var dInfo = new KeyPressEvent
+							if (deviceDesc != null)
 							{
-								DeviceName = Marshal.PtrToStringAnsi(pData),
-								DeviceHandle = rid.hDevice,
-								DeviceType = Win32.GetDeviceType(rid.dwType),
-								Name = deviceDesc,
-								Source = keyboardNumber++.ToString(CultureInfo.InvariantCulture)
-							};
-						   
-							if (!_deviceList.ContainsKey(rid.hDevice))
-							{
-								numberOfDevices++;
-								_deviceList.Add(rid.hDevice, dInfo);
+								var dInfo = new KeyPressEvent
+								{
+									DeviceName = Marshal.PtrToStringAnsi(pData),
+									DeviceHandle = rid.hDevice,
+									DeviceType = Win32.GetDeviceType(rid.dwType),
+									Name = deviceDesc,
+									Source = keyboardNumber++.ToString(CultureInfo.InvariantCulture)
+								};
+
+								if (!_deviceList.ContainsKey(rid.hDevice))
+								{
+									numberOfDevices++;
+									_deviceList.Add(rid.hDevice, dInfo);
+								}
 							}
 						}
 

@@ -138,21 +138,24 @@ namespace DCSB.Input
                     {
                         var deviceDesc = GetDeviceDescription(deviceName);
 
-                        var dInfo = new KeyPressEvent
+                        if (deviceDesc != null)
                         {
-                            DeviceName = Marshal.PtrToStringAnsi(pData),
-                            DeviceHandle = rid.hDevice,
-                            DeviceType = GetDeviceType(rid.dwType),
-                            Name = deviceDesc,
-                            Source = keyboardNumber++.ToString(CultureInfo.InvariantCulture)
-                        };
+                            var dInfo = new KeyPressEvent
+                            {
+                                DeviceName = Marshal.PtrToStringAnsi(pData),
+                                DeviceHandle = rid.hDevice,
+                                DeviceType = GetDeviceType(rid.dwType),
+                                Name = deviceDesc,
+                                Source = keyboardNumber++.ToString(CultureInfo.InvariantCulture)
+                            };
 
-                        sw.WriteLine(dInfo.ToString());
-                        sw.WriteLine(di.ToString());
-                        sw.WriteLine(di.KeyboardInfo.ToString());
-                        sw.WriteLine(di.HIDInfo.ToString());
-                        //sw.WriteLine(di.MouseInfo.ToString());
-                        sw.WriteLine("=========================================================================================================");
+                            sw.WriteLine(dInfo.ToString());
+                            sw.WriteLine(di.ToString());
+                            sw.WriteLine(di.KeyboardInfo.ToString());
+                            sw.WriteLine(di.HIDInfo.ToString());
+                            //sw.WriteLine(di.MouseInfo.ToString());
+                            sw.WriteLine("=========================================================================================================");
+                        }
                     }
 
                     Marshal.FreeHGlobal(pData);
@@ -186,6 +189,10 @@ namespace DCSB.Input
         public static string GetDeviceDescription(string device)
         {
             var deviceKey = RegistryAccess.GetDeviceKey(device);
+
+            if (deviceKey == null)
+                return null;
+
             var deviceDesc = deviceKey.GetValue("DeviceDesc").ToString();
             deviceDesc = deviceDesc.Substring(deviceDesc.IndexOf(';') + 1);
 
