@@ -13,7 +13,11 @@ namespace DCSB.Business
     {
         private const string DirectoryName = "DCSB";
         private const string FileName = "config.xml";
+        private const string TempFileName = "config_tmp.xml";
+        private const string BackupFileName = "config_backup.xml";
         private readonly string ConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), DirectoryName, FileName);
+        private readonly string TempConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), DirectoryName, TempFileName);
+        private readonly string BackupConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), DirectoryName, BackupFileName);
 
         private Timer _timer;
         private ConfigurationModel _model;
@@ -22,14 +26,24 @@ namespace DCSB.Business
         {
             XmlSerializer serializer = new XmlSerializer(typeof(ConfigurationModel));
 
-            if (!File.Exists(ConfigPath))
+            if (!File.Exists(TempConfigPath))
             {
-                CreateFile(ConfigPath);
+                CreateFile(TempConfigPath);
             }
-            using (FileStream stream = File.Open(ConfigPath, FileMode.Truncate))
+            using (FileStream stream = File.Open(TempConfigPath, FileMode.Truncate))
             {
                 serializer.Serialize(stream, _model);
             }
+
+            if (File.Exists(ConfigPath))
+            {
+                File.Replace(TempConfigPath, ConfigPath, BackupConfigPath, true);
+            }
+            else
+            {
+                File.Move(TempConfigPath, ConfigPath);
+            }
+
             Debug.WriteLine("Saved configuration");
             _timer.Dispose();
             _timer = null;
@@ -47,10 +61,19 @@ namespace DCSB.Business
 
             using (FileStream stream = File.Open(ConfigPath, FileMode.Open))
             {
-                result = (ConfigurationModel)serializer.Deserialize(stream);
+                try
+                {
+                    result = (ConfigurationModel)serializer.Deserialize(stream);
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
             }
 
-            return result;
+            MoveCorruptedConfig(ConfigPath);
+            return new ConfigurationModel();
         }
 
         public void Save(ConfigurationModel model)
@@ -75,7 +98,20 @@ namespace DCSB.Business
                 Directory.CreateDirectory(directoryPath);
             }
 
-            File.Create(ConfigPath, 1, FileOptions.None, security).Close();
+            File.Create(filePath, 1, FileOptions.None, security).Close();
+        }
+
+        private void MoveCorruptedConfig(string filePath)
+        {
+            string newPath = filePath.Replace(".xml", $"_corrupted_{DateTime.Now.Ticks}.xml");
+            try
+            {
+                File.Move(filePath, newPath);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
         }
 
         public void Dispose()
