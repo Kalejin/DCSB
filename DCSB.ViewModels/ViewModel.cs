@@ -10,7 +10,8 @@ using DCSB.Input;
 using DCSB.Models;
 using DCSB.Utils;
 using System.Threading.Tasks;
-using System.Linq;
+using System.Security.Principal;
+using System.Diagnostics;
 
 namespace DCSB.ViewModels
 {
@@ -201,6 +202,17 @@ namespace DCSB.ViewModels
             }
         }
 
+        public Visibility NotAdministrator
+        {
+            get
+            {
+                return (new WindowsPrincipal(WindowsIdentity.GetCurrent()))
+                    .IsInRole(WindowsBuiltInRole.Administrator) ?
+                    Visibility.Collapsed : 
+                    Visibility.Visible;
+            }
+        }
+
         public ICommand CheckForUpdatesCommand
         {
             get { return new RelayCommand(CheckForUpdates); }
@@ -265,6 +277,28 @@ namespace DCSB.ViewModels
         private void OpenAbout()
         {
             _applicationStateModel.AboutOpened = true;
+        }
+
+        public ICommand OpenNotAdministratorCommand
+        {
+            get { return new RelayCommand(OpenNotAdministrator); }
+        }
+        private void OpenNotAdministrator()
+        {
+            var result = MessageBox.Show("DCSB is not running as an administrator.\n" +
+                "This is fine as long as keybinds work when other app is focused.\n" +
+                "If you focus other app and keybins stop working, you'll need to run DCSB as admin.\n\n" +
+                "Restart DCSB and run it as admin now?", 
+                "Not Admin",
+                MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                var exeName = Process.GetCurrentProcess().MainModule.FileName;
+                var startInfo = new ProcessStartInfo(exeName) { Verb = "runas" };
+                Process.Start(startInfo);
+                Application.Current.Shutdown();
+            }
         }
 
         public ICommand OpenCounterFileDialogCommand

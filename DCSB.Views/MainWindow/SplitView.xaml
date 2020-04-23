@@ -57,6 +57,10 @@
                 </MenuItem.ItemContainerStyle>
             </MenuItem>
 
+            <MenuItem Header="Not Admin" 
+                      Visibility="{Binding NotAdministrator}" 
+                      Command="{Binding OpenNotAdministratorCommand}" />
+
             <MenuItem Header="Help"
                       HorizontalAlignment="Right">
                 <MenuItem Header="About" 
